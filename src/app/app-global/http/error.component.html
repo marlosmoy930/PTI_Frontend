@@ -1,0 +1,40 @@
+<div *ngIf="isModalVisible"
+     [config]="{ show: true }"
+     (onHidden)="onHidden()"
+     bsModal
+     #modal="bs-modal"
+     class="modal fade">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title float-left">Server Errors</h4>
+        <button type="button" class="close float-right" (click)="close()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-hover table-responsive">
+          <thead>
+            <tr>
+              <th><i18n key="HttpError.Status" default="Status"></i18n></th>
+              <th><i18n key="HttpError.Message" default="Message"></i18n></th>
+              <th><i18n key="HttpError.ErrorId" default="Error Id"></i18n></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let error of errors">
+              <td>{{error.status}}</td>
+              <td>{{error.message}}</td>
+              <td>{{error.errorId}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-primary" (click)="close()">
+          <i18n key="Buttons.Close"></i18n>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
