@@ -1,0 +1,17 @@
+<div class="card m-2 p-1 chart-container">
+  <div class="card-header clickable p-0 pl-2" (click)="toggleParametersVisibility()">
+    <div class="checkbox-container">
+      <i class="fa fa-square-o" *ngIf="!isSelected" (click)="selectChart()"></i>
+      <i class="fa fa-square text-primary" *ngIf="isSelected" (click)="selectChart()"></i>
+    </div>
+    <span class="chart-title">
+      {{chart?.name}}
+      <i class="fa fa-caret-down" *ngIf="!chart?.parameters.isParametersSectionVisible"></i>
+      <i class="fa fa-caret-up" *ngIf="chart?.parameters.isParametersSectionVisible"></i>
+    </span>
+  </div>
+  <div class="card-body p-2">
+    <template #chartContainer>
+    </template>
+  </div>
+</div>

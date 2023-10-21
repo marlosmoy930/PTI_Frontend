@@ -1,0 +1,186 @@
+<div class="spinner-container">
+  <div class="parameters-form" *ngIf="parameters.isParametersSectionVisible">
+    <div class="form-row">
+      <div class="form-group col-6">
+        <label for="{{createElementId('project')}}"><i18n key="QaSummary.FilteredChart.Project" default="Project"></i18n></label>
+        <ng-select class="sm"
+                   [items]="projects"
+                   bindLabel="name"
+                   bindValue="id"
+                   [(ngModel)]="parameters.filter.projectId"
+                   labelForId="{{createElementId('project')}}">
+        </ng-select>
+      </div>
+      <div class="form-group col-3">
+        <label for="{{createElementId('sourceLang')}}">
+          <i18n key="QaSummary.FilteredChart.SourceLanguage" default="Source Language"></i18n>
+        </label>
+        <ng-select class="sm"
+                   [items]="languages"
+                   bindLabel="acronym"
+                   bindValue="id"
+                   [(ngModel)]="parameters.filter.sourceLanguageId"
+                   labelForId="{{createElementId('sourceLang')}}">
+        </ng-select>
+      </div>
+      <div class="form-group col-3">
+        <label for="{{createElementId('targetLanguage')}}"><i18n key="QaSummary.FilteredChart.TargetLanguage" default="Target Language"></i18n></label>
+        <ng-select class="sm"
+                   [items]="languages"
+                   bindLabel="acronym"
+                   bindValue="id"
+                   [(ngModel)]="parameters.filter.targetLanguageId"
+                   labelForId="{{createElementId('targetLanguage')}}">
+        </ng-select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-6">
+        <label for="{{createElementId('provider')}}"><i18n key="QaSummary.FilteredChart.Provider" default="Provider"></i18n></label>
+        <ng-select class="sm"
+                   [items]="providers"
+                   bindLabel="name"
+                   bindValue="id"
+                   [(ngModel)]="parameters.filter.translationProviderId"
+                   labelForId="{{createElementId('provider')}}">
+        </ng-select>
+      </div>
+      <div class="form-group col-3">
+        <label for="{{createElementId('fromDate')}}">
+          <i18n key="QaSummary.FilteredChart.FromDate" default="From"></i18n>
+        </label>
+        <div class="input-group">
+          <input id="{{createElementId('fromDate')}}"
+                 type="text"
+                 class="form-control form-control-sm"
+                 bsDatepicker
+                 [(ngModel)]="parameters.filter.fromDate">
+          <div class="input-group-append" *ngIf="parameters.filter.fromDate">
+            <button class="btn btn-sm btn-outline-secondary" type="button" (click)="parameters.filter.fromDate = undefined">
+              <i class="fa fa-times"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="form-group col-3">
+        <label for="{{createElementId('toDate')}}">
+          <i18n key="QaSummary.FilteredChart.ToDate" default="To"></i18n>
+        </label>
+        <div class="input-group">
+          <input id="{{createElementId('toDate')}}"
+                 type="text"
+                 class="form-control form-control-sm"
+                 bsDatepicker
+                 [(ngModel)]="parameters.filter.toDate">
+          <div class="input-group-append" *ngIf="parameters.filter.toDate">
+            <button class="btn btn-sm btn-outline-secondary" type="button" (click)="parameters.filter.toDate = undefined">
+              <i class="fa fa-times"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-2">
+        <label>
+          <i18n key="QaSummary.FilteredChart.ChartType" default="Chart Type"></i18n>
+        </label>
+        <ng-select class="sm"
+                   [items]="chartTypes"
+                   bindValue="value"
+                   bindLabel="name"
+                   [(ngModel)]="chartType"
+                   [clearable]="false">
+        </ng-select>
+      </div>
+      <div class="form-group col-5">
+        <label>
+          <i18n key="QaSummary.FilteredChart.GroupByField1" default="Field 1"></i18n>
+        </label>
+        <ng-select class="sm"
+                   [items]="groupByFields"
+                   bindValue="value"
+                   bindLabel="name"
+                   [(ngModel)]="parameters.groupByField1"
+                   [clearable]="false">
+        </ng-select>
+      </div>
+      <div class="form-group col-5">
+        <ng-container *ngIf="isStaticChartType">
+          <label for="{{createElementId('groupByField2')}}">
+            <i18n key="QaSummary.FilteredChart.GroupByField2" default="Field 2"></i18n>
+          </label>
+          <ng-select class="sm"
+                     [items]="groupByFields"
+                     bindValue="value"
+                     bindLabel="name"
+                     [(ngModel)]="parameters.groupByField2"
+                     labelForId="{{createElementId('groupByField2')}}">
+          </ng-select>
+        </ng-container>
+        <ng-container *ngIf="isTimeChartType">
+          <label for="{{createElementId('periodType')}}">
+            <i18n key="QaSummary.FilteredChart.PeriodType" default="Period Type"></i18n>
+          </label>
+          <ng-select class="sm"
+                     [items]="chartPeriodTypes"
+                     bindValue="value"
+                     bindLabel="name"
+                     [(ngModel)]="parameters.periodType"
+                     [clearable]="false"
+                     labelForId="{{createElementId('periodType')}}">
+          </ng-select>
+        </ng-container>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-3">
+        <label for="{{createElementId('chartValueOperationType')}}">
+          <i18n key="QaSummary.FilteredChart.OperationType" default="Operation Type"></i18n>
+        </label>
+        <ng-select class="sm"
+                   [items]="chartValueOperationTypes"
+                   bindValue="value"
+                   bindLabel="name"
+                   [(ngModel)]="parameters.chartValueOperationType"
+                   [clearable]="false"
+                   labelForId="{{createElementId('chartValueOperationType')}}">
+        </ng-select>
+      </div>
+      <div class="form-group col-3">
+        <label for="{{createElementId('chartSizeType')}}">
+          <i18n key="QaSummary.FilteredChart.Size" default="Size"></i18n>
+        </label>
+        <ng-select class="sm"
+                   [items]="chartSizeTypes"
+                   bindValue="value"
+                   bindLabel="name"
+                   [(ngModel)]="parameters.chartSizeType"
+                   [clearable]="false"
+                   labelForId="{{createElementId('chartSizeType')}}">
+        </ng-select>
+      </div>
+      <div class="form-group col-3">
+        <label for="{{createElementId('legendDisplayType')}}">
+          <i18n key="QaSummary.FilteredChart.Legend" default="Legend"></i18n>
+        </label>
+        <ng-select class="sm"
+                   [items]="legendDisplayTypes"
+                   bindValue="value"
+                   bindLabel="name"
+                   [(ngModel)]="parameters.legendDisplayType"
+                   [clearable]="false"
+                   labelForId="{{createElementId('legendDisplayType')}}">
+        </ng-select>
+      </div>
+      <div class="form-group col-2 offset-1">
+        <label>&nbsp;</label><br />
+        <button class="btn btn-sm btn-outline-primary w-100" (click)="saveAndUpdate()">
+          Update
+        </button>
+      </div>
+    </div>
+  </div>
+  <chart-issue #chart></chart-issue>
+  <spinner [isVisible]="isBusy"></spinner>
+</div>

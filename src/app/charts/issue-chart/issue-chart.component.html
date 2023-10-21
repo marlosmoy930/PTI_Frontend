@@ -1,0 +1,14 @@
+<div *ngIf="isReady">
+  <div class="chart-container">
+    <canvas [class.d-none]="!isChartVisible"
+            baseChart
+            [datasets]="chartDataSets"
+            [options]="options"
+            [labels]="chartLabels"
+            [chartType]="chartType"
+            [legend]="legend"></canvas>
+  </div>
+  <div *ngIf="!isChartVisible" class="font-weight-bold text-center badge-light">
+    <i18n key="Shared.Text.NoData"></i18n>
+  </div>
+</div>
