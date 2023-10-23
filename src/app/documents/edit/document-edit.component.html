@@ -1,0 +1,110 @@
+<div class="col-xl-8 col-lg-10 col-md-12 ml-auto mr-auto" *ngIf="model">
+  <form #form="ngForm" novalidate class="mt-2">
+    <div class="form-row">
+      <h3 class="col-12 mt-3">
+        <i18n *ngIf="isNew" key="Document.Edit.CreateNew" default="Create a new Document"></i18n>
+        <i18n *ngIf="!isNew" key="Document.Edit.Edit" default="Edit Document"></i18n>
+      </h3>
+    </div>
+    <div class="form-row">
+      <div class="form-group col">
+        <label for="projectName"><i18n key="Document.Edit.ProjectName" default="Project Name"></i18n></label>
+        <input id="projectName"
+               type="text"
+               class="form-control"
+               [value]="model.projectName"
+               name="projectName"
+               readonly>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col">
+        <label for="name"><i18n key="Document.Edit.Name" default="Name"></i18n></label>
+        <input id="name"
+               type="text"
+               class="form-control validatable"
+               [(ngModel)]="model.name"
+               name="name"
+               required>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col">
+        <label for="sourceLang"><i18n key="Document.Edit.SourceLanguage" default="Source Language"></i18n></label>
+        <ng-select [items]="languages"
+                   bindLabel="acronym"
+                   bindValue="id"
+                   [(ngModel)]="model.sourceLanguageId"
+                   [disabled]="!hasDependecies"
+                   name="sourceLang"
+                   labelForId="sourceLang">
+        </ng-select>
+      </div>
+      <div class="form-group col">
+        <label for="qaModel"><i18n key="Document.Edit.QaModel" default="QA Model"></i18n></label>
+        <ng-select [items]="qaModels"
+                   [clearable]="true"
+                   bindValue="id"
+                   bindLabel="name"
+                   [(ngModel)]="model.qaModelId"
+                   labelForId="qaModel"
+                   name="qaModel"
+                   class="validatable">
+        </ng-select>
+      </div>
+      <div class="form-group col">
+        <label for="wordsCount"><i18n key="Document.Edit.WordsCount" default="Word Count"></i18n></label>
+        <input id="wordsCount"
+               type="number"
+               min="1"
+               class="form-control validatable"
+               [(ngModel)]="model.wordsCount"
+               name="wordsCount"
+               required>
+      </div>
+    </div>
+    <div class="form-row px-2" *ngIf="form.invalid && isFormValidated">
+      <div class="col-12 alert alert-danger text-center">
+        <i18n key="Document.Edit.Validation" default="Please correct fields marked red"></i18n>
+      </div>
+    </div>
+    <div class="form-row px-2">
+      <button type="button"
+              class="btn btn-primary"
+              [disabled]="isBusy"
+              (click)="save()">
+        <i18n *ngIf="isNew" key="Buttons.Create"></i18n>
+        <i18n *ngIf="!isNew" key="Buttons.Update"></i18n>
+      </button>
+      <button type="button"
+              class="btn btn-secondary ml-2"
+              [disabled]="isBusy"
+              (click)="navigateBack()">
+        <i18n key="Buttons.Cancel"></i18n>
+      </button>
+      <a *ngIf="!isNew"
+         [routerLink]="['/qa-summary/translations']"
+         [queryParams]="{documentId: model.id}"
+         class="ml-3 align-self-center">
+        <i18n key="Document.Edit.Translations" default="Translations"></i18n>
+      </a>
+      <a *ngIf="!isNew"
+         [routerLink]="['/projects', model.projectId, 'documents',  model.id, 'translations', 'add']"
+         class="ml-3 align-self-center">
+        <i18n key="Document.Edit.AddTranslation" default="Add translation"></i18n>
+      </a>
+      <a *ngIf="!isNew"
+         [routerLink]="['./questions']"
+         class="ml-3 align-self-center">
+        <i18n key="Document.Edit.Questions" default="Questions"></i18n>
+      </a>
+      <button *ngIf="!isNew && hasDependecies"
+              type="button"
+              class="btn btn-outline-danger ml-auto"
+              [disabled]="isBusy"
+              (click)="delete()">
+        <i18n key="Buttons.Delete"></i18n>
+      </button>
+    </div>
+  </form>
+</div>

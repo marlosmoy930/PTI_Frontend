@@ -1,0 +1,77 @@
+<div class="p-3 d-flex">
+  <div class="d-flex flex-column mt-1">
+    <button type="button"
+            class="btn btn-sm btn-secondary my-1 nowrap"
+            (click)="removeDashboard()"
+            i18nTitle="Dashboard.RemoveDashboard"
+            default="Remove Dashboard">
+      <i class="fa fa-th-list"></i>
+      &nbsp;
+      <i class="fa fa-trash-o"></i>
+    </button>
+    <button type="button"
+            class="btn btn-sm btn-secondary my-1 nowrap"
+            (click)="renameDashboard()"
+            i18nTitle="Dashboard.RenameDashboard"
+            default="Rename Dashboard">
+      <i class="fa fa-th-list"></i>
+      &nbsp;
+      <i class="fa fa-pencil-square-o"></i>
+    </button>
+    <button type="button"
+            class="btn btn-sm btn-secondary my-1 nowrap"
+            (click)="removeChart()"
+            i18nTitle="Dashboard.RemoveChart"
+            default="Remove Chart">
+      <i class="fa fa-picture-o"></i>
+      &nbsp;
+      <i class="fa fa-trash-o"></i>
+    </button>
+    <button type="button"
+            class="btn btn-sm btn-secondary my-1 nowrap"
+            (click)="renameChart()"
+            i18nTitle="Dashboard.RenameChart"
+            default="Rename Chart">
+      <i class="fa fa-picture-o"></i>
+      &nbsp;
+      <i class="fa fa-pencil-square-o"></i>
+    </button>
+    <ng-container *ngIf="canMoveCharts">
+      <button type="button"
+              class="btn btn-sm btn-secondary my-1 nowrap"
+              (click)="moveChart(1)"
+              i18nTitle="Dashboard.MoveChartRight"
+              default="Move right">
+        <i class="fa fa-picture-o"></i>
+        &nbsp;
+        <i class="fa fa-arrow-right"></i>
+      </button>
+      <button type="button"
+              class="btn btn-sm btn-secondary my-1 nowrap"
+              (click)="moveChart(-1)"
+              i18nTitle="Dashboard.MoveChartLeft"
+              default="Move left">
+        <i class="fa fa-picture-o"></i>
+        &nbsp;
+        <i class="fa fa-arrow-left"></i>
+      </button>
+    </ng-container>
+    <hr />
+    <button type="button"
+            class="btn btn-sm btn-secondary my-1 nowrap"
+            (click)="addChart(1)"
+            i18nTitle="Dashboard.AddIssueChart"
+            default="Add Issue Chart">
+      &nbsp;
+      <i class="fa fa-pie-chart"></i>
+      &nbsp;
+    </button>
+  </div>
+  <div class="spinner-container flex-fill">
+    <div class="chart-container">
+      <template #componentsContainer>
+      </template>
+    </div>
+    <spinner [isVisible]="isBusy"></spinner>
+  </div>
+</div>

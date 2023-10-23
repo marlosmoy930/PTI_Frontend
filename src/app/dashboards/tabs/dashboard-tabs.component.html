@@ -1,0 +1,28 @@
+<div class="spinner-container">
+  <tabset type="pills" #tabset>
+    <tab>
+      <ng-template tabHeading>
+        <i (click)="addDashboard()"
+           class="fa fa-plus small"
+           i18nTitle="DashboardTabs.AddDashboard"
+           default="Add Dashboard"></i>
+      </ng-template>
+      <div class="text-center my-4">
+        <h4 *ngIf="!dashboards || !dashboards.length">
+          <i18n key="DashboardTabs.NoDashboards" default="No Dashboards"></i18n>
+        </h4>
+        <button class="btn btn-outline-primary" (click)="addDashboard()">
+          <i18n key="DashboardTabs.AddDashboard" default="Add Dashboard"></i18n>
+        </button>
+      </div>
+    </tab>
+    <tab *ngFor="let dashboard of dashboards"
+         heading={{dashboard.name}}
+         (deselect)="onDeselectTab($event)">
+      <dashboard [data]="dashboard"
+                 (onDashboardRemove)="removeDashboard($event)"
+                 (onDashboardRename)="renameDashboard($event)"></dashboard>
+    </tab>
+  </tabset>
+  <spinner [isVisible]="isBusy"></spinner>
+</div>

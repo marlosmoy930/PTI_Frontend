@@ -1,0 +1,25 @@
+.chart-container {
+  height: calc(100% - 0.65em);
+}
+
+:host {
+  &.has-parameters {
+    grid-row-end: span 2;
+  }
+
+  &.large {
+    grid-column-end: span 2;
+  }
+}
+
+.checkbox-container {
+  cursor: pointer;
+  position: absolute;
+  left: 0.5em;
+  top: 0.25em;
+  width: 0.5em;
+}
+
+.chart-title {
+  margin-left: 1em;
+}
