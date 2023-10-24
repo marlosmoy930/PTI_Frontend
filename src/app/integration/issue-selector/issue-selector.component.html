@@ -1,0 +1,31 @@
+<div class="container col-lg-7" *ngIf="!issue && integrationData">
+  <div class="card">
+    <div class="card-header">
+      Select an Issue to edit
+    </div>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item"
+          *ngFor="let issue of integrationData.existingIntegrationIssues">
+        <button class="btn btn-default float-right" (click)="selectIssue(issue.id)">Select</button>
+        <div>category: <strong>{{issue.categoryName}}</strong>, severity: <strong>{{issue.severityName}}</strong></div>
+        <div>created by: <strong>{{issue.createdBy}}</strong> on <strong>{{issue.createdDate | userDate:'shortDate,shortTime' | async}}</strong></div>
+      </li>
+      <li class="list-group-item" (click)="selectIssue()">
+        <button class="btn btn-default float-right">Select</button>
+        <strong>New Issue</strong>
+      </li>
+    </ul>
+  </div>
+</div>
+<qa-issue-editor *ngIf="issue"
+                 [model]="issue"
+                 [isTranslationSectionVisible]="false"
+                 [integrationConfig]="integrationConfig"
+                 (onSave)="saveAdditionalDataAndCloseDialog()"
+                 (onCancel)="backToIssueList()">
+</qa-issue-editor>
+<div *ngIf="!issue && integrationData" class="container col-lg-7 mt-3">
+  <div class="d-flex justify-content-center">
+    <button class="btn btn-default" (click)="closeDialog()">Cancel</button>
+  </div>
+</div>

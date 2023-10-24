@@ -1,0 +1,41 @@
+<div class="col-md-10 ml-auto mr-auto">
+  <h3 class="mt-3">
+    <i18n key="Language.List.Title" default="Languages"></i18n>
+    <button type="button" class="btn" (click)="navigateToEdit(0)">
+      <i class="fa fa-plus"></i>
+    </button>
+  </h3>
+  <div class="spinner-container" *ngIf="rows">
+    <table class="table table-sm table-hover">
+      <thead class="thead-light">
+        <tr>
+          <th><i18n key="Language.List.Id" default="Id"></i18n></th>
+          <th><i18n key="Language.List.Name" default="Name"></i18n></th>
+          <th><i18n key="Language.List.Acronym" default="Acronym"></i18n></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of rows" class="clickable" (click)="navigateToEdit(row.id)">
+          <td>{{row.id}}</td>
+          <td>{{row.name}}</td>
+          <td>{{row.acronym}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="font-weight-bold text-center badge-light" *ngIf="!rows?.length">
+      <i18n key="Shared.Text.NoData"></i18n>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <pagination [totalItems]="totalRows"
+                    [(ngModel)]="pageIndex"
+                    [itemsPerPage]="itemsPerPage"
+                    [maxSize]="5"
+                    [directionLinks]="true"
+                    [boundaryLinks]="true"
+                    (pageChanged)="gotoPage($event.page)"></pagination>
+      </div>
+    </div>
+    <spinner [isVisible]="isBusy"></spinner>
+  </div>
+</div>
