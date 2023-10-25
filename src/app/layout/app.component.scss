@@ -1,0 +1,116 @@
+@import "../../scss/bootstrap/_variables.scss";
+@import "_variables.scss";
+
+.sidebar {
+  transition: left ease-in-out 0.3s;
+  position: fixed;
+  top: $header-height;
+  left: -9999px;
+  bottom: 0;
+  z-index: 2;
+
+  .topmenu {
+    z-index: 2;
+    background-color: darken($blue, 5%);
+
+    sup {
+      font-size: 60%;
+    }
+  }
+
+
+  a {
+    text-decoration: none;
+    cursor: pointer;
+    padding-left: 1.15rem;
+    padding-right: 1.15rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+
+    &:first-child {
+      padding-top: 1.5rem;
+    }
+
+    &:hover {
+      background-color: lighten($blue, 5%);
+    }
+
+    &.active {
+      border-right: 3px solid lighten($blue, 30%);
+    }
+  }
+
+  .submenu {
+    transition: left ease-in 0.4s;
+    position: fixed;
+    top: $header-height;
+    left: -9999px;
+    bottom: 0;
+    padding-left: 1.5rem;
+    padding-top: 1rem;
+    padding-right: 1.5rem;
+    background-color: lighten($blue, 5%);
+
+    a {
+      padding-left: 0;
+    }
+  }
+}
+
+.main {
+  min-height: 100%;
+  padding: 0 15px 0;
+  margin-bottom: $footer-height + 10px;
+
+  &.main-content-only {
+    padding: 15px;
+    margin: 0;
+  }
+}
+
+.footer {
+  height: $footer-height;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.notificationbar {
+  $titleHeight: 24px;
+
+  transition: right ease-in-out 0.3s;
+  position: fixed;
+  top: $header-height;
+  right: -9999px;
+  bottom: 0;
+  z-index: 3;
+  padding: 1rem;
+  box-shadow: 0 0 0.1rem rgba(0,0,0,0.5);
+  min-width: 20rem;
+
+  .title {
+    height: $titleHeight;
+  }
+
+  .content {
+    $pillsHeight: 69px;
+
+    height: calc(100% - #{$titleHeight});
+    overflow: hidden;
+
+    .fa-bell {
+      font-size: xx-large;
+    }
+
+    .nav-pills {
+      height: $pillsHeight;
+    }
+
+    [notification-list] {
+      height: calc(100% - #{$pillsHeight});
+      overflow: auto;
+      padding-right: 0.25rem;
+    }
+  }
+}

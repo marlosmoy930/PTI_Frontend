@@ -1,0 +1,25 @@
+<ng-container *ngIf="!isMainContenOnly && !isAnonymousUser">
+  <i class="fa fa-bars" (click)="toggleSidebar()"></i>
+  <div class="flex-fill">&nbsp;</div>
+  <i class="fa"
+     [ngClass]="{'fa-bell-o': !hasUnreadNotifications, 'fa-bell text-success': hasUnreadNotifications }"
+     (click)="toggleNotificationbar()">
+  </i>
+  <div dropdown>
+    <i dropdownToggle class="fa fa-user-circle-o"></i>
+    <ul *dropdownMenu class="dropdown-menu dropdown-menu-right">
+      <li>
+        <a class="dropdown-item" [routerLink]="['/user-profile']">
+          <i18n key="TopNav.Profile"></i18n>: {{currentUser.login}}
+        </a>
+      </li>
+      <li (click)="installExtension()" *ngIf="isChrome && !isExtensionInstalled">
+        <a class="dropdown-item clickable">
+          <i18n key="Home.QualityAssurance.InstallExtension" default="Install Extension" class="text-info"></i18n>
+        </a>
+      </li>
+      <li class="divider dropdown-divider"></li>
+      <li><a class="dropdown-item" [routerLink]="['/sign-in']"><i18n key="TopNav.Logout"></i18n></a></li>
+    </ul>
+  </div>
+</ng-container>

@@ -1,0 +1,160 @@
+<brand-menu></brand-menu>
+<nav class="navbar bg-light" top-header *ngIf="currentUser && !currentUser.isAnonymous"></nav>
+<div class="main container-fluid"
+     [ngClass]="{ 'main-content-only': isMainContenOnly}">
+  <router-outlet></router-outlet>
+  <footer class="footer text-center py-3 bg-secondary" *ngIf="!isMainContenOnly">
+    <span class="text-muted">PTIGlobal {{currentYear}} - All rights reserved v{{appInfo?.version}}</span>
+  </footer>
+</div>
+<div class="sidebar d-flex flex-row" [class.d-none]="!currentUser" #sidebar>
+  <div class="d-flex flex-column topmenu">
+    <a [routerLink]="['/home']" (click)="hideSidebar()" i18nTitle="Layout.Sidebar.Home" default="Home">
+      <i class="fa fa-home text-white"></i>
+    </a>
+    <a *ngIf="currentUser?.isAdministrator"
+       [class.active]="subMenuType == 'admin'"
+       i18nTitle="Layout.Sidebar.Administration"
+       default="Administration"
+       (click)="toggleSubmenu(submenuAdmin, 'admin')">
+      <i class="fa fa-wrench text-white"></i>
+    </a>
+    <a *ngIf="currentUser?.isLead"
+       [class.active]="subMenuType == 'lead'"
+       (click)="toggleSubmenu(submenuLead, 'lead')"
+       i18nTitle="Layout.Sidebar.LeadReports"
+       default="Lead Reports">
+      <i class="fa fa-line-chart text-white"></i>
+    </a>
+    <a *ngIf="currentUser?.isProjectManager"
+       [class.active]="subMenuType == 'pm'"
+       (click)="toggleSubmenu(submenuProjectManager, 'pm')"
+       i18nTitle="Layout.Sidebar.ProjectManagerReports"
+       default="Project Manager Reports">
+      <i class="fa fa-bar-chart text-white"> </i>
+    </a>
+    <a *ngIf="currentUser?.isTester"
+       [class.active]="subMenuType == 'qa'"
+       i18nTitle="Layout.Sidebar.QualityAssurance"
+       default="Quality Assurance"
+       (click)="toggleSubmenu(submenuQa, 'qa')">
+      <i class="fa fa-quora text-white"></i>
+    </a>
+    <a *ngIf="currentUser?.isProjectManager"
+       [class.active]="subMenuType == 'qa-pm'"
+       i18nTitle="Layout.Sidebar.PMQualityAssurance"
+       default="PM Quality Assurance"
+       (click)="toggleSubmenu(submenuQaManager, 'qa-pm')">
+      <i class="fa fa-quora text-white"></i><sup class="text-white">PM</sup>
+    </a>
+  </div>
+
+  <div class="d-flex flex-column submenu" #submenuAdmin>
+    <h5 class="text-white"><i18n key="Layout.Sidebar.Administration" default="Administration"></i18n></h5>
+    <a [routerLink]="['/users']" (click)="hideSidebar()">
+      <i18n key="Layout.Sidebar.Users" default="Users"></i18n>
+    </a>
+    <a [routerLink]="['/work-tasks']" (click)="hideSidebar()">
+      <i18n key="Layout.Sidebar.WorkTasks" default="System Tasks"></i18n>
+    </a>
+    <a [routerLink]="['/work-task-runs']" (click)="hideSidebar()">
+      <i18n key="Layout.Sidebar.WorkTaskRuns" default="Task Run History"></i18n>
+    </a>
+    <a [routerLink]="['/statistics']" (click)="hideSidebar()">
+      <i18n key="Layout.Sidebar.Statistics" default="Statistics"></i18n>
+    </a>
+  </div>
+  <div class="d-flex flex-column submenu" #submenuQa>
+    <h5 class="text-white"><i18n key="Layout.Sidebar.QualityAssurance" default="Quality Assurance"></i18n></h5>
+    <a [routerLink]="['/qa-summary/providers']" (click)="hideSidebar()">
+      <i18n key="Layout.Sidebar.ProviderSummary" default="Provider Summary"></i18n>
+    </a>
+    <a [routerLink]="['/qa-summary/source-languages']" (click)="hideSidebar()">
+      <i18n key="Layout.Sidebar.SourceLanguagesSummary" default="Source Languages Summary"></i18n>
+    </a>
+    <a [routerLink]="['/qa-summary/target-languages']" (click)="hideSidebar()">
+      <i18n key="Layout.Sidebar.TargetLanguagesSummary" default="Target Languages Summary"></i18n>
+    </a>
+    <a [routerLink]="['/qa-summary/projects']" (click)="hideSidebar()">
+      <i18n key="Layout.Sidebar.ProjectsSummary" default="Projects Summary"></i18n>
+    </a>
+    <a [routerLink]="['/qa-summary/documents']" (click)="hideSidebar()">
+      <i18n key="Layout.Sidebar.DocumentsSummary" default="Documents Summary"></i18n>
+    </a>
+    <a [routerLink]="['/qa-summary/translations']" (click)="hideSidebar()">
+      <i18n key="Layout.Sidebar.TranslationsSummary" default="Translations Summary"></i18n>
+    </a>
+    <a [routerLink]="['/qa-summary/issues']" (click)="hideSidebar()">
+      <i18n key="Layout.Sidebar.IssuesSummary" default="Issues Summary"></i18n>
+    </a>
+    <a [routerLink]="['/question-summary']" (click)="hideSidebar()">
+      <i18n key="Layout.Sidebar.QuestionSummary" default="Question Summary"></i18n>
+    </a>
+  </div>
+  <div class="d-flex flex-column submenu" #submenuProjectManager>
+    <h5 class="text-white"><i18n key="Layout.Sidebar.ProjectManagerReports" default="Project Manager Reports"></i18n></h5>
+    <a (click)="showReportVendorSearchDialog()" href="javascript:void(0)">
+      <i18n key="Layout.Sidebar.ProjectManagerReports.VendorSearchReport" default="Vendor Search Report"></i18n>
+    </a>
+  </div>
+  <div class="d-flex flex-column submenu" #submenuLead>
+    <h5 class="text-white"><i18n key="Layout.Sidebar.LeadReports" default="Lead Reports"></i18n></h5>
+    <a (click)="showReportTesterHoursByLeadDialog()" href="javascript:void(0)">
+      <i18n key="Layout.Sidebar.LeadReports.TesterHoursByLeadReport" default="Tester Hours By Lead Report"></i18n>
+    </a>
+  </div>
+  <div class="d-flex flex-column submenu" #submenuQaManager>
+    <h5 class="text-white"><i18n key="Layout.Sidebar.QaModel" default="PM Quality Assurance"></i18n></h5>
+    <a [routerLink]="['/qa-models']" (click)="hideSidebar()">
+      <i18n key="Layout.Sidebar.QaModelList" default="QA Models"></i18n>
+    </a>
+    <a [routerLink]="['/projects']" (click)="hideSidebar()">
+      <i18n key="Layout.Sidebar.ProjectList" default="Projects"></i18n>
+    </a>
+    <a [routerLink]="['/translation-providers']" (click)="hideSidebar()">
+      <i18n key="Layout.Sidebar.TranslationProviderList" default="Translation Providers"></i18n>
+    </a>
+    <a [routerLink]="['/languages']" (click)="hideSidebar()">
+      <i18n key="Layout.Sidebar.LanguageList" default="Languages"></i18n>
+    </a>
+  </div>
+</div>
+<div class="notificationbar d-flex flex-column bg-white" #notificationbar>
+  <div class="title d-flex">
+    <strong>
+      <i class="fa fa-bell"></i>
+      &nbsp;
+      <i18n key="Layout.Notifications.Title" default="Notifications"></i18n>
+    </strong>
+    <div class="flex-fill">&nbsp;</div>
+    <strong>
+      <a [routerLink]="['/event-subscriptions']" (click)="toggleNotificationbar()" i18nTitle="Layout.Sidebar.Subscriptions" default="Subscriptions">
+        <i class="fa fa-cog"></i>
+      </a>
+    </strong>
+  </div>
+  <div class="content d-flex flex-column">
+    <ul class="nav nav-pills py-4 small">
+      <li class="nav-item">
+        <a class="nav-link"
+           [class.active]="isUnreadNotificationMode"
+           href="javascript:void(0)"
+           (click)="showUnreadNotifications()">
+          <i18n key="Layout.Notifications.Unread.Title" default="Unread"></i18n>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link"
+           [class.active]="isAllNotificationMode"
+           href="javascript:void(0)"
+           (click)="showAllNotifications()">
+          <i18n key="Layout.Notifications.All.Title" default="All"></i18n>
+        </a>
+      </li>
+    </ul>
+    <div notification-list>
+    </div>
+  </div>
+</div>
+<app-http-error></app-http-error>
+<toasts></toasts>
