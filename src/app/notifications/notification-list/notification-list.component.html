@@ -1,0 +1,33 @@
+<ng-container *ngIf="hasNoNewNotifications">
+  <i class="fa fa-bell text-black-50"></i>
+  <h4>
+    <i18n key="Layout.Notifications.AllCaughtUp" default="You're all caught up!"></i18n>
+  </h4>
+  <i18n key="Layout.Notifications.NoNewNotification" default="No new notifications."></i18n>
+</ng-container>
+<ng-container *ngIf="hasNotifications">
+  <ul class="list-group">
+    <li class="list-group-item px-2" *ngFor="let notification of notificationState.viewModeNotifications">
+      <div class="small text-info d-flex justify-content-between">
+        {{notification.createdDate | userDate:'shortDate,shortTime' | async}}
+        <div>
+          <a *ngIf="notification.isNew" href="javascript:void(0)" (click)="markNotificationAsRead(notification)">
+            <span class="spinner-border spinner-border-sm" *ngIf="notification.shouldMarkAsRead"></span>
+            Mark as read
+          </a>
+          &nbsp;
+          <i class="fa fa-times clickable text-muted" (click)="deleteNotificationById(notification.id)"></i>
+        </div>
+      </div>
+      <div class="text-left font-weight-bold">
+        <a [routerLink]="['/event-subscriptions', notification.userEventTriggerSubscriptionId]"
+           (click)="markAsReadAndNavigateToSubscription(notification)">
+          {{notification.data.SubscriptionName}}
+        </a>
+      </div>
+      <div class="text-left small">
+        {{notification.data.Description}}
+      </div>
+    </li>
+  </ul>
+</ng-container>

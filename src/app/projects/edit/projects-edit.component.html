@@ -1,0 +1,139 @@
+<div class="col-xl-8 col-lg-10 col-md-12 ml-auto mr-auto" *ngIf="model">
+  <form #form="ngForm" novalidate class="mt-2">
+    <div class="form-row">
+      <h3 class="col-12 mt-3">
+        <i18n *ngIf="isNew" key="Project.Edit.CreateNew" default="Create a new Project"></i18n>
+        <i18n *ngIf="!isNew" key="Project.Edit.Edit" default="Edit Project"></i18n>
+      </h3>
+    </div>
+    <div class="form-row">
+      <div class="form-group col">
+        <label for="name"><i18n key="Project.Edit.Name" default="Name"></i18n></label>
+        <input id="name"
+               type="text"
+               class="form-control validatable"
+               [(ngModel)]="model.name"
+               name="name"
+               required>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="startDate"><i18n key="Project.Edit.StartDate" default="Start Date"></i18n></label>
+        <input id="startDate"
+               name="startDate"
+               type="text"
+               class="form-control"
+               bsDatepicker
+               [(ngModel)]="model.startDate">
+      </div>
+      <div class="form-group col-md-6">
+        <label for="finishDate"><i18n key="Project.Edit.FinishDate" default="Finish Date"></i18n></label>
+        <input id="finishDate"
+               name="finishDate"
+               type="text"
+               class="form-control"
+               bsDatepicker
+               [(ngModel)]="model.finishDate">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="qaModel"><i18n key="Project.Edit.QaModel" default="QA Model"></i18n></label>
+        <ng-select [items]="qaModels"
+                   [clearable]="false"
+                   bindValue="id"
+                   bindLabel="name"
+                   [(ngModel)]="model.qaModelId"
+                   labelForId="qaModel"
+                   name="qaModel"
+                   class="validatable"
+                   required>
+        </ng-select>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="dueDate"><i18n key="Project.Edit.DueDate" default="Due Date"></i18n></label>
+        <input id="dueDate"
+               name="dueDate"
+               type="text"
+               class="form-control"
+               bsDatepicker
+               [(ngModel)]="model.dueDate">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="sdlLegacyProjectJobId"><i18n key="Project.Edit.SdlJobId" default="SDL Job Id"></i18n></label>
+        <div class="input-group">
+          <input id="sdlLegacyProjectJobId"
+                 name="sdlLegacyProjectJobId"
+                 type="number"
+                 class="form-control"
+                 min="0"
+                 [(ngModel)]="model.sdlLegacyProjectJobId">
+          <div class="input-group-append" *ngIf="model.sdlLegacyProjectJobId">
+            <button class="btn btn-sm btn-outline-secondary" type="button" (click)="model.sdlLegacyProjectJobId = undefined">
+              <i class="fa fa-times"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="memoQProjectId"><i18n key="Project.Edit.MemoQProjectId" default="MemoQ Project Id"></i18n></label>
+        <div class="input-group">
+          <input id="memoQProjectId"
+                 name="memoQProjectId"
+                 type="text"
+                 class="form-control validatable"
+                 [(ngModel)]="model.memoQProjectId">
+          <div class="input-group-append" *ngIf="model.memoQProjectId">
+            <button class="btn btn-sm btn-outline-secondary" type="button" (click)="model.memoQProjectId = undefined">
+              <i class="fa fa-times"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-row px-2" *ngIf="form.invalid && isFormValidated">
+      <div class="col-12 alert alert-danger text-center">
+        <i18n key="Project.Edit.Validation" default="Please correct fields marked red"></i18n>
+      </div>
+    </div>
+    <div class="form-row px-2">
+      <button type="button"
+              class="btn btn-primary"
+              [disabled]="isBusy"
+              (click)="save()">
+        <i18n *ngIf="isNew" key="Buttons.Create"></i18n>
+        <i18n *ngIf="!isNew" key="Buttons.Update"></i18n>
+      </button>
+      <button type="button"
+              class="btn btn-secondary ml-2"
+              [disabled]="isBusy"
+              (click)="navigateToList()">
+        <i18n key="Buttons.Cancel"></i18n>
+      </button>
+      <a [routerLink]="['translation-providers']" class="ml-3 align-self-center" *ngIf="!isNew">
+        <i18n key="Project.Edit.Providers" default="Providers"></i18n>
+      </a>
+      <a *ngIf="!isNew"
+         [routerLink]="['/qa-summary/documents']"
+         [queryParams]="{projectId: model.id}"
+         class="ml-3 align-self-center">
+        <i18n key="Project.Edit.Documents" default="Documents"></i18n>
+      </a>
+      <a *ngIf="!isNew"
+         [routerLink]="['/projects', model.id, 'documents', 'add']"
+         class="ml-3 align-self-center">
+        <i18n key="Project.Edit.AddDocument" default="Add document"></i18n>
+      </a>
+      <button *ngIf="canBeDeleted"
+              type="button"
+              class="btn btn-outline-danger ml-auto"
+              [disabled]="isBusy"
+              (click)="delete()">
+        <i18n key="Buttons.Delete"></i18n>
+      </button>
+    </div>
+  </form>
+</div>
