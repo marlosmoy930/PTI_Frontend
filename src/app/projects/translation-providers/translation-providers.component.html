@@ -1,0 +1,67 @@
+<div class="col-xl-6 col-lg-8 col-md-10 ml-auto mr-auto">
+  <div class="form-row my-3">
+    <h3 class="col">
+      <i18n key="Projects.ProjectTranslationProvider.ProvidersOf" default="Providers of"></i18n>
+      {{project?.name}}
+    </h3>
+  </div>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th><i18n key="Projects.ProjectTranslationProvider.TranslationProvider" default="Translation Provider"></i18n></th>
+        <th><i18n key="Projects.ProjectTranslationProvider.SourceLanguage" default="Source Language"></i18n></th>
+        <th><i18n key="Projects.ProjectTranslationProvider.TargetLanguage" default="Target Language"></i18n></th>
+        <th><i18n key="Projects.ProjectTranslationProvider.Action" default="Action"></i18n></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngIf="newProjectProvider">
+        <td>
+          <ng-select [items]="availableProviders"
+                     bindValue="id"
+                     bindLabel="name"
+                     [(ngModel)]="newProjectProvider.translationProviderId"
+                     class="sm">
+          </ng-select>
+        </td>
+        <td>
+          <ng-select [items]="languages"
+                     bindValue="id"
+                     bindLabel="acronym"
+                     [(ngModel)]="newProjectProvider.sourceLanguageId"
+                     class="sm">
+          </ng-select>
+        </td>
+        <td>
+          <ng-select [items]="languages"
+                     bindValue="id"
+                     bindLabel="acronym"
+                     [(ngModel)]="newProjectProvider.targetLanguageId"
+                     class="sm">
+          </ng-select>
+        </td>
+        <td>
+          <button type="button"
+                  class="btn btn-sm btn-outline-primary"
+                  [disabled]="!isAddButtonEnabled"
+                  (click)="addProjectProvider()">
+            <i18n key="Buttons.Add"></i18n>
+          </button>
+        </td>
+      </tr>
+      <tr *ngFor="let projectProvider of projectProviders" class="clickable">
+        <td>{{projectProvider.translationProviderName}}</td>
+        <td>{{projectProvider.sourceLanguageAcronym}}</td>
+        <td>{{projectProvider.targetLanguageAcronym}}</td>
+        <td>
+          <button type="button"
+                  class="btn btn-sm btn-outline-primary"
+                  [disabled]="!projectProvider.canBeDeleted"
+                  (click)="deleteProjectProvider(projectProvider)">
+            <i18n key="Buttons.Remove"></i18n>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

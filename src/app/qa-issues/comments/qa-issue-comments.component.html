@@ -1,0 +1,41 @@
+<div class="card">
+  <div class="card-header clickable"
+       (click)="areCommentsVisible = !areCommentsVisible"
+       [attr.aria-expanded]="areCommentsVisible" aria-controls="commentsSection">
+    <span>Comments</span>
+    <span class="badge badge-secondary">{{comments.length}}</span>
+    <i class="fa fa-caret-down" *ngIf="!areCommentsVisible"></i>
+    <i class="fa fa-caret-up" *ngIf="areCommentsVisible"></i>
+  </div>
+  <div class="card-body p-2" id="commentsSection" [collapse]="!areCommentsVisible" [isAnimated]="true">
+    <div>
+      <div *ngFor="let comment of comments" class="comment-container mt-3">
+        <small class="pull-right">{{comment.sortingDate | userDate:'shortDate,shortTime' | async}}</small>
+        <h4 class="text-bold">
+          {{comment.userName}}
+          <span class="small text-black-50" *ngIf="comment.externalUserTitle">
+            ({{comment.externalUserTitle}})
+          </span>
+        </h4>
+        <div class="comment-text" [innerHTML]="comment.comment | sanitizeHtml"></div>
+      </div>
+    </div>
+    <div class="d-flex mt-3">
+      <div class="input-group">
+        <div class="flex-grow-1">
+          <textarea type="text"
+                    rows="3"
+                    class="form-control"
+                    placeholder="Type your comment"
+                    [(ngModel)]="newComment"
+                    [disabled]="isBusy"></textarea>
+        </div>
+        <div class="align-self-center p-2">
+          <button class="btn btn-default" (click)="addComment()">
+            <i18n key="Buttons.Add"></i18n>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

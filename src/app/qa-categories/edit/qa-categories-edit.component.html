@@ -1,0 +1,114 @@
+<div *ngIf="model"
+     [ngClass]="{ 'col-lg-5 col-md-7 ml-auto mr-auto': !isModalView, 'container p-4': isModalView}">
+  <form #form="ngForm" novalidate class="mt-2">
+    <div class="form-row">
+      <h3 class="col-12 mt-3">
+        <i18n *ngIf="isNew" key="QaCategory.Edit.CreateNew" default="Create a new QA Category"></i18n>
+        <i18n *ngIf="!isNew" key="QaCategory.Edit.Edit" default="Edit QA Category"></i18n>
+      </h3>
+    </div>
+    <div class="form-row" *ngIf="!isModalView">
+      <label class="col-form-label">
+        <i18n key="QaCategory.Edit.QaModel" default="Qa Model"></i18n>
+      </label>
+      <div>
+        <a class="form-control-plaintext font-weight-bold text-primary"
+           [routerLink]="['../../']">{{qaModel?.name}}</a>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="name"><i18n key="QaCategory.Edit.Name" default="Name"></i18n></label>
+        <input id="name"
+               type="text"
+               class="form-control validatable"
+               [(ngModel)]="model.name"
+               name="name"
+               required>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="groupName"><i18n key="QaCategory.Edit.GroupName" default="Group Name"></i18n></label>
+        <input id="groupName"
+               type="text"
+               class="form-control validatable"
+               [(ngModel)]="model.groupName"
+               name="groupName">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="factor"><i18n key="QaCategory.Edit.Factor" default="Factor"></i18n></label>
+        <input id="factor"
+               type="number"
+               step=".01"
+               min=".01"
+               class="form-control validatable"
+               [(ngModel)]="model.factor"
+               name="factor"
+               required>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="benchmarkQaCategory"><i18n key="QaCategory.Edit.BenchmarkCategory" default="Benchmark Category"></i18n></label>
+        <ng-select [items]="benchmarkQaCategories"
+                   [clearable]="false"
+                   bindValue="id"
+                   bindLabel="name"
+                   [(ngModel)]="model.benchmarkQaCategoryId"
+                   labelForId="benchmarkQaCategory"
+                   name="benchmarkQaCategory"
+                   class="validatable"
+                   required>
+        </ng-select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col">
+        <label for="memoQQaCategoryIdx"><i18n key="QaCategory.Edit.MemoQQaCategoryIdx" default="MemoQ Index"></i18n></label>
+        <input id="memoQQaCategoryIdx"
+               type="number"
+               step="1"
+               min="0"
+               class="form-control validatable"
+               [(ngModel)]="model.memoQQaCategoryIdx"
+               name="memoQQaCategoryIdx">
+      </div>
+      <div class="form-group col">
+        <label for="memoQQaCategorySubIdx"><i18n key="QaCategory.Edit.MemoQQaCategorySubIdx" default="MemoQ Sub Index"></i18n></label>
+        <input id="memoQQaCategorySubIdx"
+               type="number"
+               step="1"
+               min="0"
+               class="form-control validatable"
+               [(ngModel)]="model.memoQQaCategorySubIdx"
+               name="memoQQaCategorySubIdx">
+      </div>
+    </div>
+    <div class="form-row px-2" *ngIf="form.invalid && isFormValidated">
+      <div class="col-12 alert alert-danger text-center">
+        <i18n key="QaCategory.Edit.Validation" default="Please correct fields marked red"></i18n>
+      </div>
+    </div>
+    <div class="form-row px-2">
+      <button type="button"
+              class="btn btn-primary"
+              [disabled]="isBusy"
+              (click)="save()">
+        <i18n *ngIf="isNew" key="Buttons.Create"></i18n>
+        <i18n *ngIf="!isNew" key="Buttons.Update"></i18n>
+      </button>
+      <button type="button"
+              class="btn ml-2"
+              [disabled]="isBusy"
+              (click)="navigateToList()">
+        <i18n key="Buttons.Cancel"></i18n>
+      </button>
+      <button *ngIf="canBeDeleted"
+              type="button"
+              class="btn btn-outline-danger ml-auto"
+              [disabled]="isBusy"
+              (click)="delete()">
+        <i18n key="Buttons.Delete"></i18n>
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,88 @@
+<div class="col-md-10 ml-auto mr-auto">
+  <h3 class="mt-3">
+    <i18n key="Project.List.Title" default="Projects"></i18n>
+    <button type="button" class="btn" (click)="navigateToEdit(0)">
+      <i class="fa fa-plus"></i>
+    </button>
+  </h3>
+  <div class="spinner-container" *ngIf="rows">
+    <div class="form-row">
+      <div class="form-group col-5 col-lg-3">
+        <label for="projectName"><i18n key="Project.List.ProjectName" default="Project Name"></i18n></label>
+        <input id="projectName"
+               class="form-control form-control-sm"
+               type="text"
+               (keyup.enter)="searchProjects()"
+               [(ngModel)]="projectName"
+               name="projectName" />
+      </div>
+      <div class="form-group col-5 col-lg-3">
+        <label for="documentName"><i18n key="Project.List.DocumentName" default="Document Name"></i18n></label>
+        <input id="documentName"
+               class="form-control form-control-sm"
+               type="text"
+               (keyup.enter)="searchProjects()"
+               [(ngModel)]="documentName"
+               name="documentName" />
+      </div>
+      <div class="form-group col-md-1 col-sm-2">
+        <label>&nbsp;</label><br />
+        <button class="btn btn-sm btn-outline-primary btn-block" (click)="searchProjects()">
+          <i class="fa fa-search"></i>
+        </button>
+      </div>
+    </div>
+    <table class="table table-sm table-hover">
+      <thead class="thead-light">
+        <tr>
+          <th><i18n key="Project.List.Id" default="Id"></i18n></th>
+          <th><i18n key="Project.List.Name" default="Name"></i18n></th>
+          <th><i18n key="Project.List.StartDate" default="Start"></i18n></th>
+          <th><i18n key="Project.List.DueDate" default="Due"></i18n></th>
+          <th><i18n key="Project.List.FinishDate" default="Finish"></i18n></th>
+          <th><i18n key="Project.List.QaModel" default="QA Model"></i18n></th>
+          <th><i18n key="Project.List.Documents" default="Documents"></i18n></th>
+          <th><i18n key="Project.List.Providers" default="Providers"></i18n></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of rows" class="clickable" (click)="navigateToEdit(row.id)">
+          <td>{{row.id}}</td>
+          <td>{{row.name.truncate(50)}}</td>
+          <td>{{row.startDate | userDate:'shortDate' | async }}</td>
+          <td>{{row.dueDate | userDate:'shortDate' | async }}</td>
+          <td>{{row.finishDate | userDate:'shortDate' | async }}</td>
+          <td>{{row.qaModelName}}</td>
+          <td class="text-center">
+            <a [routerLink]="['/qa-summary/documents']"
+               [queryParams]="{projectId: row.id}"
+               class="text-underline">
+              {{row.documentsCount | userNumber: '1.0-0' | async}}
+            </a>
+          </td>
+          <td class="text-center">
+            <a [routerLink]="[row.id,'translation-providers']"
+               class="text-underline">
+              {{row.projectTranslationProvidersCount | userNumber: '1.0-0' | async}}
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="font-weight-bold text-center badge-light" *ngIf="!rows?.length">
+      <i18n key="Shared.Text.NoData"></i18n>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <pagination [totalItems]="totalRows"
+                    [(ngModel)]="pageIndex"
+                    [itemsPerPage]="itemsPerPage"
+                    [maxSize]="5"
+                    [directionLinks]="true"
+                    [boundaryLinks]="true"
+                    (pageChanged)="gotoPage($event.page)"></pagination>
+      </div>
+    </div>
+    <spinner [isVisible]="isBusy"></spinner>
+  </div>
+</div>
