@@ -1,0 +1,32 @@
+:host ::ng-deep {
+  .view-type {
+    &.ng-select {
+      .ng-select-container {
+        width: 120px;
+      }
+    }
+  }
+}
+
+.test-quality-container {
+  
+}
+
+.penalty-points-container {
+  table {
+    .severity-name {
+      border-bottom: 1px solid black;
+    }
+
+    .category-name {
+      border-right: 1px solid black;
+    }
+
+
+    tbody {
+      .cell {
+        border: 1px solid black;
+      }
+    }
+  }
+}

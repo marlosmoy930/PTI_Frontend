@@ -1,0 +1,118 @@
+<div *ngIf="isReady" class="container col-lg-7">
+  <h4><i18n key="QaIssues.Details.Title" default="QA Issue Details"></i18n></h4>
+  <div class="form-row mt-3">
+    <div class="form-group col-6">
+      <label><i18n key="QaIssues.Detail.CreatedDate" default="Created Date"></i18n></label>
+      <input class="form-control" type="text" readonly [value]="issue.createdDate | userDate:'shortDate,shortTime' | async">
+    </div>
+    <div class="form-group col-6">
+      <label><i18n key="QaIssues.Detail.CreatedBy" default="Created By"></i18n></label>
+      <input class="form-control" type="text" readonly [value]="issue.createdBy">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-6">
+      <label><i18n key="QaIssues.Detail.Project" default="Project"></i18n></label>
+      <input class="form-control" type="text" readonly [value]="issue.project">
+    </div>
+    <div class="form-group col-6">
+      <label><i18n key="QaIssues.Detail.Document" default="Document"></i18n></label>
+      <input class="form-control" type="text" readonly [value]="issue.document">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-6">
+      <label><i18n key="QaIssues.Detail.TargetLanguage" default="Target Language"></i18n></label>
+      <input class="form-control" type="text" readonly [value]="issue.targetLanguage">
+    </div>
+    <div class="form-group col-6">
+      <label><i18n key="QaIssues.Detail.SourceLanguage" default="Source Language"></i18n></label>
+      <input class="form-control" type="text" readonly [value]="issue.sourceLanguage">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-6">
+      <label><i18n key="QaIssues.Detail.Translator" default="Translator"></i18n></label>
+      <input class="form-control" type="text" readonly [value]="issue.translator">
+    </div>
+    <div class="form-group col-6">
+      <label><i18n key="QaIssues.Detail.Model" default="Model"></i18n></label>
+      <input class="form-control" type="text" readonly [value]="issue.model">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-6">
+      <label><i18n key="QaIssues.Detail.Category" default="Category"></i18n></label>
+      <input class="form-control" type="text" readonly [value]="issue.category">
+    </div>
+    <div class="form-group col-6">
+      <label><i18n key="QaIssues.Detail.Severity" default="Severity"></i18n></label>
+      <input class="form-control" type="text" readonly [value]="issue.severity">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-6">
+      <label><i18n key="QaIssues.Detail.SegmentNumber" default="Segment Number"></i18n></label>
+      <input [value]="issue.segmentNumber" class="form-control" readonly />
+    </div>
+    <div class="form-group col-6">
+      <label><i18n key="QaIssues.Detail.ArbitrationStatus" default="Arbitration Status"></i18n></label>
+      <input [value]="getArbitrationStatusName(issue.arbitrationStatus)" class="form-control" readonly />
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-12">
+      <label><i18n key="QaIssues.Detail.Source" default="Source"></i18n></label>
+      <textarea [value]="issue.sourceString" class="form-control" readonly></textarea>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-12">
+      <label><i18n key="QaIssues.Detail.Original" default="Original"></i18n></label>
+      <textarea [value]="issue.originalString" class="form-control" readonly></textarea>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-12">
+      <label><i18n key="QaIssues.Detail.Url" default="Url"></i18n></label>
+      <input type="url" [value]="issue.url" class="form-control" readonly />
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-12">
+      <label><i18n key="QaIssues.Detail.Revised" default="Revised"></i18n></label>
+      <textarea [value]="issue.revisedTarget" class="form-control" readonly></textarea>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-6">
+      <label><i18n key="QaIssues.Detail.Status" default="Status"></i18n></label>
+      <input [value]="getStatusName(issue.status)" class="form-control" readonly />
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col">
+      <button *ngIf="hasScreenshot"
+              type="button"
+              class="btn btn-outline-primary"
+              (click)="showScreenshot()">
+        <i18n key="Buttons.ShowScreenshot"></i18n>
+      </button>
+    </div>
+    <div class="col text-right">
+      <button type="button" class="btn btn-outline-primary mr-3" (click)="navigateToEdit()">
+        <i class="fa fa-pencil mr-1"></i>
+        <i18n key="Buttons.Edit"></i18n>
+      </button>
+      <button type="button"
+              class="btn btn-outline-primary"
+              (click)="navigateBack()">
+        <i18n key="Buttons.Back"></i18n>
+      </button>
+    </div>
+  </div>
+
+  <qa-issue-comments *ngIf="issue" [qaIssueId]="issue.id">
+  </qa-issue-comments>
+</div>
+

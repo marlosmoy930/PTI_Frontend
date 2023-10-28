@@ -1,0 +1,10 @@
+@import "../../../scss/bootstrap/_variables.scss";
+
+.comment-container {
+  border-bottom: 1px solid $gray-300;
+  padding-bottom: 1rem;
+
+  .comment-text {
+    white-space: pre-wrap;
+  }
+}

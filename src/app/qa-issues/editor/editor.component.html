@@ -1,0 +1,255 @@
+<form #form="ngForm" novalidate class="container mt-3 col-lg-7" *ngIf="model">
+  <h4 *ngIf="!integrationType && isNew"><i18n key="QaIssues.Editor.Title" default="Add QA Issue"></i18n></h4>
+  <h4 *ngIf="!integrationType && !isNew"><i18n key="QaIssues.Edit.Title" default="Edit QA Issue"></i18n></h4>
+  <div class="card mb-3">
+    <div class="card-header clickable"
+         (click)="isTranslationSectionVisible = !isTranslationSectionVisible"
+         [attr.aria-expanded]="isTranslationSectionVisible" aria-controls="translationSection">
+      <span>Translation Info </span>
+      <i class="fa fa-caret-down" *ngIf="!isTranslationSectionVisible"></i>
+      <i class="fa fa-caret-up" *ngIf="isTranslationSectionVisible"></i>
+    </div>
+    <div class="card-body p-2">
+      <div id="translationSection" [collapse]="!isTranslationSectionVisible" [isAnimated]="true">
+        <div class="form-row">
+          <div class="form-group col-6">
+            <label for="Project"><i18n key="QaIssues.Editor.Project" default="Project"></i18n></label>
+            <ng-select [items]="projects"
+                       bindLabel="name"
+                       bindValue="id"
+                       [(ngModel)]="model.projectId"
+                       (change)="onProjectChange($event?.id)"
+                       [disabled]="!isNew"
+                       required
+                       class="validatable"
+                       name="Project"
+                       labelForId="Project">
+            </ng-select>
+          </div>
+          <div class="form-group col-6">
+            <label for="TranslationDocument"><i18n key="QaIssues.Editor.Document" default="Document"></i18n></label>
+            <ng-select [items]="documents"
+                       bindLabel="name"
+                       bindValue="id"
+                       [(ngModel)]="model.documentId"
+                       required
+                       class="validatable"
+                       name="Document"
+                       labelForId="TranslationDocument"
+                       (change)="onDocumentChange($event.id)"
+                       [disabled]="!isNew || !model.projectId">
+            </ng-select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col">
+            <label for="DocumentTranslation"><i18n key="QaIssues.Editor.Language" default="Language"></i18n></label>
+            <ng-select [items]="translations"
+                       bindLabel="targetLanguageAcronym"
+                       bindValue="id"
+                       [(ngModel)]="model.translationId"
+                       required
+                       class="validatable"
+                       name="DocumentTranslation"
+                       labelForId="DocumentTranslation"
+                       (change)="onTranslationChange($event.id)"
+                       [disabled]="!isNew || !model.documentId">
+            </ng-select>
+          </div>
+          <div class="form-group col">
+            <label for="DocumentTranslator"><i18n key="QaIssues.Editor.Translator" default="Translator"></i18n></label>
+            <ng-select *ngIf="!hasMemoQTranslator"
+                       [items]="translators"
+                       bindLabel="displayName"
+                       bindValue="id"
+                       [(ngModel)]="model.translatorId"
+                       class="validatable"
+                       name="DocumentTranslator"
+                       labelForId="DocumentTranslator"
+                       [disabled]="!model.translationId">
+            </ng-select>
+            <input *ngIf="integrationConfig"
+                   type="text"
+                   readonly
+                   [value]="integrationConfig.translatorName"
+                   class="form-control" />
+            <input *ngIf="hasMemoQTranslator"
+                   type="text"
+                   readonly
+                   [value]="model.memoQTranslatorUserName"
+                   class="form-control" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="form">
+    <div class="form-row">
+      <div class="form-group col-6">
+        <label for="Category"><i18n key="QaIssues.Editor.Category" default="Category"></i18n></label>
+        <ng-select [items]="qaCategories"
+                   bindLabel="name"
+                   bindValue="id"
+                   [groupBy]="groupByCategory"
+                   [(ngModel)]="model.qaCategoryId"
+                   required
+                   class="validatable"
+                   name="Category"
+                   labelForId="Category"
+                   dropdownPosition="bottom"
+                   [disabled]="!model.translationId">
+          <ng-template ng-optgroup-tmp let-item="item">
+            <strong *ngIf="!item.parentId">{{item.name}}</strong>
+            <span *ngIf="item.parentId">{{item.name}}</span>
+          </ng-template>
+        </ng-select>
+      </div>
+      <div class="form-group col-6">
+        <label for="severity"><i18n key="QaIssues.Editor.Severity" default="Severity"></i18n></label>
+        <ng-select [items]="qaSeverities"
+                   bindLabel="name"
+                   bindValue="id"
+                   [(ngModel)]="model.qaSeverityId"
+                   name="severity"
+                   class="validatable"
+                   required
+                   labelForId="severity"
+                   [disabled]="!model.translationId">
+        </ng-select>
+      </div>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-6">
+      <label for="segmentNumber"><i18n key="QaIssues.Editor.SegmentNumber" default="Segment Number"></i18n></label>
+      <ng-select [items]="translationSegments"
+                 bindLabel="segmentNumber"
+                 bindValue="id"
+                 [(ngModel)]="model.translationSegmentId"
+                 name="segmentNumber"
+                 class="validatable"
+                 required
+                 (change)="onSegmentNumberChange($event)"
+                 labelForId="segmentNumber"
+                 [disabled]="!translationSegments">
+      </ng-select>
+    </div>
+    <div class="form-group col-6">
+      <label for="arbitrationStatus"><i18n key="QaIssues.Editor.ArbitrationStatus" default="Arbitration Status"></i18n></label>
+      <ng-select [items]="arbitrationStatuses"
+                 bindValue="value"
+                 bindLabel="name"
+                 [(ngModel)]="model.arbitrationStatus"
+                 class="validatable"
+                 name="arbitrationStatus"
+                 labelForId="arbitrationStatus">
+      </ng-select>
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-12">
+      <label for="sourceString"><i18n key="QaIssues.Editor.Source" default="Source Text"></i18n></label>
+      <textarea [(ngModel)]="model.sourceString"
+                [readonly]="integrationConfig"
+                name="sourceString"
+                id="sourceString"
+                class="form-control validatable"
+                required></textarea>
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-12">
+      <label for="originalString"><i18n key="QaIssues.Editor.Original" default="Current Translation"></i18n></label>
+      <textarea [(ngModel)]="model.originalString"
+                [readonly]="integrationConfig"
+                name="originalString"
+                id="originalString"
+                class="form-control validatable"
+                required></textarea>
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-12">
+      <label for="url"><i18n key="QaIssues.Editor.Url" default="Url"></i18n></label>
+      <input type="url"
+             [(ngModel)]="model.url"
+             [disabled]="integrationConfig"
+             name="url"
+             id="url"
+             class="form-control validatable"
+             required />
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-12">
+      <label for="revisedTarget"><i18n key="QaIssues.Editor.Revised" default="Revised Translation"></i18n></label>
+      <textarea [(ngModel)]="model.revisedTarget"
+                [disabled]="integrationConfig && !integrationConfig.canEnableSdlUpdateRevisedTarget"
+                class="form-control"
+                name="revisedTarget"
+                id="revisedTarget"></textarea>
+    </div>
+  </div>
+  <div class="form-group row" *ngIf="isNew">
+    <div class="col-12">
+      <label for="comment"><i18n key="QaIssues.Editor.Comment" default="Comment"></i18n></label>
+      <textarea [(ngModel)]="comment"
+                [required]="isNew && qaModel?.isCommentRequired"
+                class="form-control validatable"
+                name="comment"
+                id="comment"></textarea>
+    </div>
+  </div>
+  <div class="form-row" *ngIf="!isNew">
+    <div class="form-group col-6">
+      <label for="status"><i18n key="QaIssues.Editor.Status" default="Status"></i18n></label>
+      <ng-select [items]="statuses"
+                 bindValue="value"
+                 bindLabel="name"
+                 [(ngModel)]="model.status"
+                 class="validatable"
+                 name="status"
+                 [clearable]="false"
+                 required
+                 labelForId="status">
+      </ng-select>
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-12">
+      <button *ngIf="!integrationConfig && hasScreenshot"
+              type="button"
+              class="btn  btn-secondary float-left"
+              (click)="showScreenshot()">
+        <i18n key="Buttons.ShowScreenshot"></i18n>
+      </button>
+      <label *ngIf="integrationConfig"
+             class="form-check-inline"
+             for="enableSdlUpdateRevisedTarget">
+        <input [disabled]="!integrationConfig.canEnableSdlUpdateRevisedTarget"
+               id="enableSdlUpdateRevisedTarget"
+               type="checkbox"
+               [(ngModel)]="integrationConfig.enableSdlUpdateRevisedTarget"
+               name="enableSdlUpdateRevisedTarget"
+               class="form-check-inline">
+        <i18n key="QaIssues.Editor.UpdateRevisedTarget" default="Update Revised Target"></i18n>
+      </label>
+      <button type="button"
+              class="btn ml-2 float-right"
+              [disabled]="isBusy"
+              (click)="cancel()">
+        <i18n key="Buttons.Cancel"></i18n>
+      </button>
+      <button type="button"
+              class="btn btn-primary float-right"
+              [disabled]="isBusy"
+              (click)="save()">
+        <i18n key="Buttons.Save"></i18n>
+      </button>
+    </div>
+  </div>
+  <qa-issue-comments *ngIf="!isNew"
+                        [qaIssueId]="model.id"
+                        #qaIssueComments>
+  </qa-issue-comments>
+</form>

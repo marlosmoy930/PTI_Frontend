@@ -1,0 +1,259 @@
+<div class="col-lg-7 col-md-10 ml-auto mr-auto" *ngIf="model">
+  <form #form="ngForm" novalidate class="mt-2">
+    <div class="form-row">
+      <h4 class="mt-3">
+        <i18n *ngIf="isNew" key="QaModel.Edit.CreateNew" default="Create a new QA Model"></i18n>
+        <i18n *ngIf="!isNew" key="QaModel.Edit.Edit" default="Edit QA Model"></i18n>
+      </h4>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="name"><i18n key="QaModel.Edit.Name" default="Name"></i18n></label>
+        <input id="name"
+               type="text"
+               class="form-control validatable"
+               [(ngModel)]="model.name"
+               name="name"
+               required>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="failedType"><i18n key="QaModel.Edit.FailedType" default="Failed Type"></i18n></label>
+        <ng-select [items]="failedTypes"
+                   [clearable]="false"
+                   bindValue="value"
+                   bindLabel="name"
+                   (change)="model.updateThreshold($event)"
+                   [(ngModel)]="model.failedType"
+                   labelForId="failedType"
+                   name="failedType"
+                   class="validatable"
+                   required>
+        </ng-select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-4">
+        <label for="normolizedThreshold"><i18n key="QaModel.Edit.Threshold" default="Normolized threshold"></i18n></label>
+        <input *ngIf="model.isByPoints"
+               id="normolizedThreshold"
+               type="number"
+               class="form-control"
+               [value]="model.normolizedThreshold"
+               name="Threshold"
+               readonly>
+        <input *ngIf="model.isByNormalizedScore"
+               id="normolizedThreshold"
+               type="number"
+               class="form-control validatable"
+               [(ngModel)]="model.threshold"
+               name="Threshold"
+               required>
+      </div>
+      <div class="form-group col-md-4">
+        <label for="pointsThreshold"><i18n key="QaModel.Edit.Threshold" default="Points threshold"></i18n></label>
+        <input *ngIf="model.isByPoints"
+               id="pointsThreshold"
+               type="number"
+               class="form-control validatable"
+               [(ngModel)]="model.threshold"
+               name="Threshold"
+               required>
+        <input *ngIf="model.isByNormalizedScore"
+               id="pointsThreshold"
+               type="number"
+               class="form-control"
+               [value]="model.pointsThreshold"
+               name="Threshold"
+               readonly>
+      </div>
+      <div class="form-group col-md-4">
+        <label for="PerWordsCount"><i18n key="QaModel.Edit.PerWordsCount" default="Words Count"></i18n></label>
+        <input id="PerWordsCount"
+               type="number"
+               class="form-control validatable"
+               [(ngModel)]="model.perWordsCount"
+               name="PerWordsCount"
+               [readonly]="model.isByNormalizedScore ? 'readonly' : null">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <div class="form-check">
+          <input class="form-check-input"
+                 type="checkbox"
+                 id="IsCommentRequired"
+                 [(ngModel)]="model.isCommentRequired"
+                 name="IsCommentRequired">
+          <label class="form-check-label" for="IsCommentRequired">
+            <i18n key="QaModel.Edit.IsCommentRequired" default="Comment Is Required"></i18n>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group col-md-6">
+        <div class="form-check">
+          <input class="form-check-input"
+                 id="IsCountMultipleErrorsAsOne"
+                 type="checkbox"
+                 [(ngModel)]="model.isCountMultipleErrorsAsOne"
+                 name="IsCountMultipleErrorsAsOne">
+          <label class="form-check-label" for="IsCountMultipleErrorsAsOne">
+            <i18n key="QaModel.Edit.IsCountMultipleErrorsAsOne" default="Count Multiple Errors As One"></i18n>
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="form-row" *ngIf="form.invalid && isFormValidated">
+      <div class="col-12 alert alert-danger text-center">
+        <i18n key="QaModel.Edit.Validation" default="Please correct fields marked red"></i18n>
+      </div>
+    </div>
+    <div class="form-row px-2">
+      <button type="button"
+              class="btn btn-primary"
+              [disabled]="isBusy"
+              (click)="save()">
+        <i18n *ngIf="isNew" key="Buttons.Create"></i18n>
+        <i18n *ngIf="!isNew" key="Buttons.Update"></i18n>
+      </button>
+      <button *ngIf="!isBenchmarkQaModel && !isNew"
+              type="button"
+              class="btn btn-outline-info ml-2"
+              [disabled]="isBusy"
+              (click)="setAsBenchmarkModel()">
+        <i18n key="QaModel.Edit.SetAsBenchmarkModel" default="Set as Benchmark"></i18n>
+      </button>
+      <button type="button"
+              class="btn btn-secondary ml-2"
+              [disabled]="isBusy"
+              (click)="navigateToList()">
+        <i18n key="Buttons.BackToList"></i18n>
+      </button>
+      <button *ngIf="canBeDeleted"
+              type="button"
+              class="btn btn-outline-danger ml-auto"
+              [disabled]="isBusy"
+              (click)="delete()">
+        <i18n key="Buttons.Delete"></i18n>
+      </button>
+    </div>
+  </form>
+  <hr class="my-4" />
+  <div class="form-row">
+    <h4>
+      <i18n key="QaModel.Edit.QualityCalculator" default="Test Quality Calculation"></i18n>
+    </h4>
+  </div>
+  <div class="form-row test-quality-container">
+    <div class="form-group col-md-4">
+      <label for="testPointsSum"><i18n key="QaModel.Edit.TestPointsSum" default="Test Points Sum"></i18n></label>
+      <input id="testPointsSum"
+             type="number"
+             class="form-control"
+             [(ngModel)]="model.testPointsSum">
+    </div>
+    <div class="form-group col-md-4">
+      <label for="testWordsCount"><i18n key="QaModel.Edit.TestWordsCount" default="Test Words Count"></i18n></label>
+      <input id="testWordsCount"
+             type="number"
+             class="form-control"
+             [(ngModel)]="model.testWordsCount">
+    </div>
+    <div class="form-group col-md-4">
+      <label for="testWordsCount"><i18n key="QaModel.Edit.QualityValue" default="Quality"></i18n></label>
+      <div class="input-group">
+        <input id="testWordsCount"
+               type="text"
+               class="form-control"
+               [ngClass]="model.isPassed ? 'text-success' : 'text-danger'"
+               [value]="model.quality"
+               readonly>
+        <div class="input-group-append">
+          <span class="input-group-text text-success" *ngIf="model.isPassed">
+            <i class="fa fa-check mr-1"></i>
+            Passed
+          </span>
+          <span class="input-group-text text-danger" *ngIf="!model.isPassed">
+            <i class="fa fa-times mr-1"></i>
+            Failed
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!isNew" class="penalty-points-container">
+    <hr class="my-4" />
+    <div class="form-row">
+      <h4>
+        <i18n key="QaModel.Edit.PenaltyPoints" default="Penalty Points"></i18n>
+      </h4>
+    </div>
+    <div class="form-row">
+      <label class="col-form-label">
+        <i18n key="QaModel.Edit.PenaltyPoint.ViewType" default="Show Points of"></i18n>
+      </label>
+      <div>
+        <ng-select [(ngModel)]="viewType"
+                   [clearable]="false"
+                   bindValue="value"
+                   bindLabel="name"
+                   [items]="viewTypes"
+                   class="view-type">
+        </ng-select>
+      </div>
+    </div>
+    <table class="table table-sm table-hover table-borderless mt-2">
+      <thead>
+        <tr>
+          <th colspan="2" rowspan="2" class="font-weight-normal align-middle">
+          </th>
+          <th [attr.colspan]="severities.length" class="text-center">
+            <a [routerLink]="['qa-severities']">
+              <i18n key="QaModel.Edit.PenaltyPointPivot.Severities" default="Severities"></i18n>
+            </a>
+            <i class="fa fa-plus clickable text-primary ml-2" (click)="showEditSeverityModal(0)"></i>
+          </th>
+        </tr>
+        <tr>
+          <th *ngFor="let severity of severities" class="text-center">
+            <span *ngIf="viewType != 2">{{severity.penaltyPoint}}</span>
+            <span *ngIf="viewType == 3">/</span>
+            <span *ngIf="viewType != 1">{{severity.benchmarkPenaltyPoint}}</span>
+          </th>
+        </tr>
+        <tr>
+          <th><i18n key="QaModel.Edit.PenaltyPointPivot.Factor" default="Factor"></i18n></th>
+          <th>
+            <a [routerLink]="['qa-categories']">
+              <i18n key="QaModel.Edit.PenaltyPointPivot.Categories" default="Categories"></i18n>
+            </a>
+            <i class="fa fa-plus clickable text-primary ml-2" (click)="showEditCategoryModal(0)"></i>
+          </th>
+          <th *ngFor="let severity of severities" class="text-center severity-name">
+            <a (click)="showEditSeverityModal(severity.id)" href="javascript:void(0)" class="font-weight-normal">
+              {{severity.name}}
+            </a>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let category of categories">
+          <td>
+            <span *ngIf="viewType != 2">{{category.factor}}</span>
+            <span *ngIf="viewType == 3">/</span>
+            <span *ngIf="viewType != 1">{{category.benchmarkFactor}}</span>
+          </td>
+          <td class="category-name">
+            <a (click)="showEditCategoryModal(category.id)" href="javascript:void(0)">{{category.name}}</a>
+          </td>
+          <td *ngFor="let severity of severities" class="text-center cell">
+            <span *ngIf="viewType != 2">{{(category.factor * severity.penaltyPoint).round(2)}}</span>
+            <span *ngIf="viewType == 3">/</span>
+            <span *ngIf="viewType != 1">{{(category.benchmarkFactor * severity.benchmarkPenaltyPoint).round(2)}}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
