@@ -1,0 +1,5 @@
+<ng-container *ngIf="issue">
+  <qa-issue-editor [model]="issue"
+                   (onSave)="navigateToIssues()"
+                   (onCancel)="navigateToIssues()"></qa-issue-editor>
+</ng-container>

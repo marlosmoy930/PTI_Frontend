@@ -1,0 +1,94 @@
+<div *ngIf="model"
+     [ngClass]="{ 'col-lg-5 col-md-7 ml-auto mr-auto': !isModalView, 'container p-4': isModalView}">
+  <form #form="ngForm" novalidate class="mt-2">
+    <div class="form-row">
+      <h3 class="col-12">
+        <i18n *ngIf="isNew" key="QaSeverity.Edit.CreateNew" default="Create a new QA Severity"></i18n>
+        <i18n *ngIf="!isNew" key="QaSeverity.Edit.Edit" default="Edit QA Severity"></i18n>
+      </h3>
+    </div>
+    <div class="form-row" *ngIf="!isModalView">
+      <label class="col-form-label">
+        <i18n key="QaSeverity.Edit.QaModel" default="Qa Model"></i18n>
+      </label>
+      <div>
+        <a class="form-control-plaintext font-weight-bold text-primary"
+           [routerLink]="['../../']">{{qaModel?.name}}</a>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="name"><i18n key="QaSeverity.Edit.Name" default="Name"></i18n></label>
+        <input id="name"
+               type="text"
+               class="form-control validatable"
+               [(ngModel)]="model.name"
+               name="name"
+               required>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="benchmarkQaSeverity"><i18n key="QaSeverity.Edit.BenchmarkSeverity" default="Benchmark Severity"></i18n></label>
+        <ng-select [items]="benchmarkQaSeverities"
+                   [clearable]="false"
+                   bindValue="id"
+                   bindLabel="name"
+                   [(ngModel)]="model.benchmarkQaSeverityId"
+                   labelForId="benchmarkQaSeverity"
+                   name="benchmarkQaSeverity"
+                   class="validatable"
+                   required>
+        </ng-select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col">
+        <label for="penaltyPoint"><i18n key="QaSeverity.Edit.PenaltyPoint" default="Penalty Point"></i18n></label>
+        <input id="penaltyPoint"
+               type="number"
+               step="1"
+               min="0"
+               class="form-control validatable"
+               [(ngModel)]="model.penaltyPoint"
+               name="penaltyPoint"
+               required>
+      </div>
+      <div class="form-group col">
+        <label for="memoQQaSeverityIdx"><i18n key="QaSeverity.Edit.MemoQQaSeverityIdx" default="MemoQ Index"></i18n></label>
+        <input id="memoQQaSeverityIdx"
+               type="number"
+               step="1"
+               min="0"
+               class="form-control validatable"
+               [(ngModel)]="model.memoQQaSeverityIdx"
+               name="memoQQaSeverityIdx">
+      </div>
+    </div>
+    <div class="form-row px-2" *ngIf="form.invalid && isFormValidated">
+      <div class="col-12 alert alert-danger text-center">
+        <i18n key="QaSeverity.Edit.Validation" default="Please correct fields marked red"></i18n>
+      </div>
+    </div>
+    <div class="form-row px-2">
+      <button type="button"
+              class="btn btn-primary"
+              [disabled]="isBusy"
+              (click)="save()">
+        <i18n *ngIf="isNew" key="Buttons.Create"></i18n>
+        <i18n *ngIf="!isNew" key="Buttons.Update"></i18n>
+      </button>
+      <button type="button"
+              class="btn ml-2"
+              [disabled]="isBusy"
+              (click)="navigateToList()">
+        <i18n key="Buttons.Cancel"></i18n>
+      </button>
+      <button *ngIf="canBeDeleted"
+              type="button"
+              class="btn btn-outline-danger ml-auto"
+              [disabled]="isBusy"
+              (click)="delete()">
+        <i18n key="Buttons.Delete"></i18n>
+      </button>
+    </div>
+  </form>
+</div>

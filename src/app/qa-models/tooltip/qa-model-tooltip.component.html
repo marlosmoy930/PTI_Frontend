@@ -1,0 +1,15 @@
+<ng-container *ngIf="data">
+  <h6 class="text-primary">{{qaModel?.name}}</h6>
+  <div [class.d-none]="isByPenalty">
+    <div>1-Points/Words > Threshold</div>
+    <div class="text-success" [class.text-danger]="!isByNormalizedPassed">
+      1-{{points}}/{{words}} > {{qaModel?.threshold}}
+    </div>
+  </div>
+  <div [class.d-none]="!isByPenalty">
+    <div>Points/Words < Threshold/PerWordsCount</div>
+    <div class="text-success" [class.text-danger]="!isByPenaltyPassed">
+      {{points}}/{{words}} < {{qaModel?.threshold}}/{{qaModel?.perWordsCount}}
+    </div>
+  </div>
+</ng-container>
