@@ -1,0 +1,6 @@
+<span *ngFor="let breadcrumb of breadcrumbs" [title]="breadcrumb.title">
+  <span *ngIf="breadcrumb.isFailed">Failed </span>
+  <span *ngIf="breadcrumb.isBenchmarkFailed">Benchmark Failed </span>
+  <a *ngIf="breadcrumb.isLink" [routerLink]="breadcrumb.fullLink" [queryParams]="breadcrumb.params">{{breadcrumb.name}}</a>
+  <span *ngIf="!breadcrumb.isLink">{{breadcrumb.name}}</span> \
+</span>

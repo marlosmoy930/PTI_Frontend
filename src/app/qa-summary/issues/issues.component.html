@@ -1,0 +1,257 @@
+<div class="container col-12">
+  <div class="title d-flex align-items-baseline">
+    <h5 class="mt-3">
+      <i18n key="QaIssues.List.Title" default="QA Issues"></i18n>
+    </h5>
+    <button type="button" class="btn" (click)="navigateToAdd()">
+      <i class="fa fa-plus"></i>
+    </button>
+  </div>
+  <div class="spinner-container">
+    <div class="container col-12 mr-auto ml-0 pl-0">
+      <div class="form-row">
+        <div class="form-group col-5 col-lg-3">
+          <label for="provider"><i18n key="QaIssues.List.Provider" default="Provider"></i18n></label>
+          <ng-select class="sm"
+                     [items]="providers"
+                     bindLabel="name"
+                     bindValue="id"
+                     [(ngModel)]="filter.translationProviderId"
+                     labelForId="provider">
+          </ng-select>
+        </div>
+        <div class="form-group col-5 col-lg-3">
+          <label for="project"><i18n key="QaIssues.List.Project" default="Project"></i18n></label>
+          <ng-select class="sm"
+                     [items]="projects$ | async"
+                     bindLabel="name"
+                     bindValue="id"
+                     [(ngModel)]="filter.projectId"
+                     [typeahead]="projectTerms"
+                     [loading]="isProjectsLoaging"
+                     labelForId="project">
+          </ng-select>
+        </div>
+        <div class="form-group col-5 col-lg-3">
+          <label for="document"><i18n key="QaIssues.List.Document" default="Document"></i18n></label>
+          <ng-select class="sm"
+                     [items]="documents$ | async"
+                     bindLabel="name"
+                     bindValue="id"
+                     [(ngModel)]="filter.documentId"
+                     [typeahead]="documentTerms"
+                     [loading]="isDocumentsLoaging"
+                     labelForId="document">
+          </ng-select>
+        </div>
+        <div class="form-group col-3 col-lg-2">
+          <label for="sourceLang">
+            <i18n class="d-none d-sm-block" key="QaIssues.List.SourceLanguage" default="Source Language"></i18n>
+            <i18n class="d-sm-none" key="QaIssues.List.Source" default="Source"></i18n>
+          </label>
+          <ng-select class="sm"
+                     [items]="languages"
+                     bindLabel="acronym"
+                     bindValue="id"
+                     [(ngModel)]="filter.sourceLanguageId"
+                     labelForId="sourceLang">
+          </ng-select>
+        </div>
+        <div class="form-group col-3 col-lg-2">
+          <label for="targetLanguage">
+            <i18n class="d-none d-sm-block" key="QaIssues.List.TargetLanguage" default="Target Language"></i18n>
+            <i18n class="d-sm-none" key="QaIssues.List.Target" default="Target"></i18n>
+          </label>
+          <ng-select class="sm"
+                     [items]="languages"
+                     bindLabel="acronym"
+                     bindValue="id"
+                     [(ngModel)]="filter.targetLanguageId"
+                     labelForId="targetLanguage">
+          </ng-select>
+        </div>
+        <div class="form-group col-3 col-lg-2">
+          <label for="qaModel">
+            <i18n class="d-none d-sm-block" key="QaIssues.List.QaModel" default="QA Model"></i18n>
+            <i18n class="d-sm-none" key="QaIssues.List.QaModel" default="QA Model"></i18n>
+          </label>
+          <ng-select class="sm"
+                     [items]="qaModels"
+                     bindLabel="name"
+                     bindValue="id"
+                     [(ngModel)]="filter.qaModelId"
+                     labelForId="qaModel"
+                     (change)="onFilterQaModelChange()">
+          </ng-select>
+        </div>
+        <div class="form-group col-3 col-lg-2">
+          <label for="category">
+            <i18n class="d-none d-sm-block" key="QaIssues.List.Category" default="Category"></i18n>
+            <i18n class="d-sm-none" key="QaIssues.List.Category" default="Category"></i18n>
+          </label>
+          <ng-select class="sm"
+                     [items]="categories"
+                     bindLabel="name"
+                     bindValue="id"
+                     [(ngModel)]="filter.categoryId"
+                     labelForId="category"
+                     [disabled]="!filter.qaModelId">
+          </ng-select>
+        </div>
+        <div class="form-group col-3 col-lg-2">
+          <label for="severity">
+            <i18n class="d-none d-sm-block" key="QaIssues.List.Severity" default="Severity"></i18n>
+            <i18n class="d-sm-none" key="QaIssues.List.Severity" default="Severity"></i18n>
+          </label>
+          <ng-select class="sm"
+                     [items]="severities"
+                     bindLabel="name"
+                     bindValue="id"
+                     [(ngModel)]="filter.severityId"
+                     labelForId="severity"
+                     [disabled]="!filter.qaModelId">
+          </ng-select>
+        </div>
+        <div class="form-group col-3 col-lg-2">
+          <label for="fromDate">
+            <i18n key="QaIssues.List.FromDate" default="From"></i18n>
+          </label>
+          <div class="input-group">
+            <input id="fromDate"
+                   type="text"
+                   class="form-control form-control-sm"
+                   bsDatepicker
+                   [(ngModel)]="filter.fromDate">
+            <div class="input-group-append" *ngIf="filter.fromDate">
+              <button class="btn btn-sm btn-outline-secondary" type="button" (click)="filter.fromDate = undefined">
+                <i class="fa fa-times"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="form-group col-3 col-lg-2">
+          <label for="toDate">
+            <i18n key="QaIssues.List.ToDate" default="To"></i18n>
+          </label>
+          <div class="input-group">
+            <input id="toDate"
+                   type="text"
+                   class="form-control form-control-sm"
+                   bsDatepicker
+                   [(ngModel)]="filter.toDate">
+            <div class="input-group-append" *ngIf="filter.toDate">
+              <button class="btn btn-sm btn-outline-secondary" type="button" (click)="filter.toDate = undefined">
+                <i class="fa fa-times"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="form-group col-3 col-lg-2">
+          <label for="orderByField">
+            <i18n key="QaIssues.List.OrderByFields" default="Order By"></i18n>
+          </label>
+          <ng-select class="sm"
+                     [items]="orderByFields"
+                     bindLabel="name"
+                     bindValue="value"
+                     [(ngModel)]="filter.issueOrderByField"
+                     labelForId="orderByField">
+          </ng-select>
+        </div>
+        <div class="form-group col-auto">
+          <label for="IsOrderByDescending">
+            <i18n key="QaIssues.List.Descending" default="Descending"></i18n>
+          </label>
+          <div class="custom-control custom-switch text-center">
+            <input type="checkbox"
+                   class="custom-control-input"
+                   id="IsOrderByDescending"
+                   [(ngModel)]="filter.isOrderByDescending"
+                   name="IsOrderByDescending">
+            <label class="custom-control-label" for="IsOrderByDescending">
+              &nbsp;
+            </label>
+          </div>
+        </div>
+        <div class="form-group col-md-1 col-sm-2">
+          <label>&nbsp;</label><br />
+          <button class="btn btn-sm btn-outline-primary btn-block" (click)="gotoPage(1)">
+            <i class="fa fa-search"></i>
+          </button>
+        </div>
+        <div class="form-group col-1">
+          <label>&nbsp;</label><br />
+          <button class="btn btn-sm btn-outline-primary" (click)="export()" i18nTitle="QaIssues.List.Export" default="Export">
+            <i class="fa fa-download"></i>
+          </button>
+        </div>
+        <div class="form-group col-1" *ngIf="currentUser && currentUser.isAdministrator">
+          <label>&nbsp;</label><br />
+          <button class="btn btn-sm btn-outline-info" (click)="confirmDeleteIssues()" i18nTitle="QaIssues.List.DeleteQaIssues" default="Delete Issues">
+            <i class="fa fa-trash-o"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <table class="table table-sm table-hover mt-2 small">
+      <thead class="thead-light">
+        <tr>
+          <th class="text-left"><i18n key="QaSummary.Issues.Id" default="Id"></i18n></th>
+          <th class="text-left"><i18n key="QaSummary.Issues.Date" default="Date"></i18n></th>
+          <th class="text-left"><i18n key="QaSummary.Issues.Project" default="Project"></i18n></th>
+          <th class="text-left"><i18n key="QaSummary.Issues.Document" default="Document"></i18n></th>
+          <th class="text-left"><i18n key="QaSummary.Issues.TranslationId" default="Translation Id"></i18n></th>
+          <th class="text-left"><i18n key="QaSummary.Issues.SourceLanguage" default="Source Language"></i18n></th>
+          <th class="text-left"><i18n key="QaSummary.Issues.TargetLanguage" default="Target Language"></i18n></th>
+          <th class="text-left"><i18n key="QaSummary.Issues.CreatedBy" default="CreatedBy"></i18n></th>
+          <th class="text-left"><i18n key="QaSummary.Issues.Translator" default="Translator"></i18n></th>
+          <th class="text-left"><i18n key="QaSummary.Issues.QaModel" default="QA Model"></i18n></th>
+          <th class="text-left"><i18n key="QaSummary.Issues.Category" default="Category"></i18n></th>
+          <th class="text-left"><i18n key="QaSummary.Issues.Severity" default="Severity"></i18n></th>
+          <th class="text-center"><i18n key="QaSummary.Issues.PointValue" default="Penalty Point(s)"></i18n></th>
+          <th class="text-center"><i18n key="QaSummary.Issues.BenchmarkPointValue" default="Benchmark Penalty Point(s)"></i18n></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let issue of rows" (dblclick)="navigateToEdit(issue.qaIssueId)">
+          <td>
+            <a [routerLink]="['/qa-issues/detail', issue.qaIssueId]" i18nTitle="QaIssues.List.IssueDetails" default="Issue Details">
+              <i class="fa fa-file-text-o"></i>
+              {{issue.qaIssueId}}
+            </a>
+          </td>
+          <td>{{issue.createdDate | userDate:'shortDate,shortTime' | async}}</td>
+          <td class="break-all">
+            <a [routerLink]="['/projects', issue.projectId]">
+              {{issue.project}}
+            </a>
+          </td>
+          <td class="break-all">
+            <a [routerLink]="['/projects', issue.projectId, 'documents', issue.documentId]">
+              {{issue.document}}
+            </a>
+          </td>
+          <td class="text-center">
+            <a [routerLink]="['/projects', issue.projectId, 'documents', issue.documentId, 'translations', issue.translationId]">
+              {{issue.translationId}}
+            </a>
+          </td>
+          <td>{{issue.sourceLanguage}}</td>
+          <td>{{issue.targetLanguage}}</td>
+          <td>{{issue.createdBy}}</td>
+          <td>{{issue.translator}}</td>
+          <td>{{issue.qaModel}}</td>
+          <td>{{issue.category}}</td>
+          <td>{{issue.severity}}</td>
+          <td class="text-center">{{issue.pointValue}}</td>
+          <td class="text-center">{{issue.benchmarkPointValue}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <qiq-pagination [totalRows]="totalRows"
+                    [filter]="filter"
+                    (pageChanged)="gotoPage($event)">
+    </qiq-pagination>
+    <spinner [isVisible]="isBusy"></spinner>
+  </div>
+</div>
