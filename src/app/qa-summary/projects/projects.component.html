@@ -1,0 +1,218 @@
+<div class="container col-12">
+  <h5 class="mt-3">
+    <i18n key="Projects.List.Title" default="Projects"></i18n>
+  </h5>
+  <div class="spinner-container">
+    <div class="container col-md-12 mr-auto ml-0 pl-0">
+      <div class="form-row">
+        <div class="form-group col-5 col-lg-3">
+          <label for="provider"><i18n key="QaSummary.Projects.Provider" default="Provider"></i18n></label>
+          <ng-select class="sm"
+                     [items]="providers"
+                     bindLabel="name"
+                     bindValue="id"
+                     [(ngModel)]="filter.translationProviderId"
+                     labelForId="provider">
+          </ng-select>
+        </div>
+        <div class="form-group col-5">
+          <label for="project"><i18n key="QaSummary.Projects.Project" default="Project"></i18n></label>
+          <ng-select class="sm"
+                     [items]="projects$ | async"
+                     bindLabel="name"
+                     bindValue="id"
+                     [(ngModel)]="filter.projectId"
+                     [typeahead]="projectTerms"
+                     [loading]="isProjectsLoaging"
+                     labelForId="project">
+          </ng-select>
+        </div>
+        <div class="form-group col-3 col-lg-2">
+          <label for="sourceLang">
+            <i18n class="d-none d-sm-block" key="QaSummary.Projects.SourceLanguage" default="Source Language"></i18n>
+            <i18n class="d-sm-none" key="QaSummary.Projects.Source" default="Source"></i18n>
+          </label>
+          <ng-select class="sm"
+                     [items]="languages"
+                     bindLabel="acronym"
+                     bindValue="id"
+                     [(ngModel)]="filter.sourceLanguageId"
+                     labelForId="sourceLang">
+          </ng-select>
+        </div>
+        <div class="form-group col-3 col-lg-2">
+          <label for="targetLanguage">
+            <i18n class="d-none d-sm-block" key="QaSummary.Projects.TargetLanguage" default="Target Language"></i18n>
+            <i18n class="d-sm-none" key="QaSummary.Projects.Target" default="Target"></i18n>
+          </label>
+          <ng-select class="sm"
+                     [items]="languages"
+                     bindLabel="acronym"
+                     bindValue="id"
+                     [(ngModel)]="filter.targetLanguageId"
+                     labelForId="targetLanguage">
+          </ng-select>
+        </div>
+        <div class="form-group col-auto">
+          <label for="IsOrderByDescending">
+            <i18n key="QaSummary.Projects.Descending" default="Descending"></i18n>
+          </label>
+          <div class="custom-control custom-switch text-center">
+            <input type="checkbox"
+                   class="custom-control-input"
+                   id="IsOrderByDescending"
+                   [(ngModel)]="filter.isOrderByDescending"
+                   name="IsOrderByDescending">
+            <label class="custom-control-label" for="IsOrderByDescending">
+              &nbsp;
+            </label>
+          </div>
+        </div>
+        <div class="form-group col-auto">
+          <label for="failedProjectsOnly">
+            <i18n key="QaSummary.Projects.FailedProjectsOnly" default="Failed"></i18n>
+          </label>
+          <div class="custom-control custom-switch text-center">
+            <input type="checkbox"
+                   class="custom-control-input"
+                   id="failedProjectsOnly"
+                   [(ngModel)]="filter.failedProjectsOnly"
+                   name="failedProjectsOnly">
+            <label class="custom-control-label" for="failedProjectsOnly"></label>
+          </div>
+        </div>
+        <div class="form-group col-auto">
+          <label for="benchmarkFailedProjectsOnly">
+            <i18n key="QaSummary.Projects.BenchmarkFailedProjectsOnly" default="Benchmark Failed"></i18n>
+          </label>
+          <div class="custom-control custom-switch text-center">
+            <input type="checkbox"
+                   class="custom-control-input"
+                   id="benchmarkFailedProjectsOnly"
+                   [(ngModel)]="filter.benchmarkFailedProjectsOnly"
+                   name="benchmarkFailedProjectsOnly">
+            <label class="custom-control-label" for="benchmarkFailedProjectsOnly"></label>
+          </div>
+        </div>
+        <div class="form-group col-md-1 col-sm-2">
+          <label>&nbsp;</label><br />
+          <button class="btn btn-sm btn-outline-primary btn-block" (click)="gotoPage(1)">
+            <i class="fa fa-search"></i>
+          </button>
+        </div>
+        <div class="form-group col-1">
+          <label>&nbsp;</label><br />
+          <button class="btn btn-sm btn-outline-primary" (click)="export()" i18nTitle="Projects.List.Export" default="Export">
+            <i class="fa fa-download"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <table class="table table-sm table-hover mt-2 small">
+      <thead class="thead-light">
+        <tr>
+          <th class="text-center"><i18n key="QaSummary.Projects.Id" default="Id"></i18n></th>
+          <th class="text-center"><i18n key="QaSummary.Projects.Project" default="Project"></i18n></th>
+          <th class="text-center"><i18n key="QaSummary.Projects.Model" default="Model"></i18n></th>
+          <th class="text-center"><i18n key="QaSummary.Projects.DocumentsWordsCount" default="Documents Words"></i18n></th>
+          <th class="text-center"><i18n key="QaSummary.Projects.TranslationsWordsCount" default="Translations Words"></i18n></th>
+          <th class="text-center"><i18n key="QaSummary.Projects.IssuesCount" default="Issues"></i18n></th>
+          <th class="text-center"><i18n key="QaSummary.Projects.DocumentsCount" default="Documents"></i18n></th>
+          <th class="text-center"><i18n key="QaSummary.Projects.FailedDocumentsCount" default="Failed Documents"></i18n></th>
+          <th class="text-center"><i18n key="QaSummary.Projects.BenchmarkFailedDocumentsCount" default="Benchmark Failed Documents"></i18n></th>
+          <th class="text-center"><i18n key="QaSummary.Projects.TranslationsCount" default="Translations"></i18n></th>
+          <th class="text-center"><i18n key="QaSummary.Projects.FailedTranslations" default="Failed Translations"></i18n></th>
+          <th class="text-center"><i18n key="QaSummary.Projects.BenchmarkFailedTranslationsCount" default="Benchmark Failed Translations"></i18n></th>
+          <th class="text-center"><i18n key="QaSummary.Projects.PointSum" default="Points"></i18n></th>
+          <th class="text-center"><i18n key="QaSummary.Projects.BenchmarkPointSum" default="Benchmark Points"></i18n></th>
+          <th class="text-center"><i18n key="QaSummary.Projects.Pass" default="Pass"></i18n></th>
+          <th class="text-center"><i18n key="QaSummary.Projects.BenchmarkPass" default="Benchmark Pass"></i18n></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of projects">
+          <td>{{item.projectId}}</td>
+          <td>
+            <a [routerLink]="['/projects', item.projectId]">
+              {{item.project}}
+            </a>
+          </td>
+          <td>
+            <span *ngIf="!item.qaModelId"
+                  class="text-underline"
+                  containerClass="light"
+                  tooltip="Not available because Documents in the Project have different QA Models">n/a</span>
+            <a *ngIf="item.qaModelId" [routerLink]="['/qa-models', item.qaModelId]">
+              {{item.qaModel}}
+            </a>
+          </td>
+          <td class="text-center">{{item.documentsWordsCount | userNumber: '1.0-0' | async}}</td>
+          <td class="text-center">{{item.translationsWordsCount | userNumber: '1.0-0' | async}}</td>
+          <td class="text-center clickable text-underline" (click)="navigateToIssues(item.projectId)">
+            {{item.issuesCount | userNumber: '1.0-0' | async}}
+          </td>
+          <td class="text-center clickable text-underline" (click)="navigateToDocuments(item.projectId)">
+            {{item.documentsCount | userNumber: '1.0-0' | async}}
+          </td>
+          <td class="text-center"
+              (click)="navigateToFailedDocuments(item)"
+              [ngClass]="{'clickable text-danger text-underline': item.invalidDocumentsCount}">
+            {{item.invalidDocumentsCount | userNumber: '1.0-0' | async}}
+          </td>
+          <td class="text-center"
+              (click)="navigateToBenchmarkFailedDocuments(item)"
+              [ngClass]="{'clickable text-danger text-underline': item.benchmarkInvalidDocumentsCount}">
+            {{item.benchmarkInvalidDocumentsCount | userNumber: '1.0-0' | async}}
+          </td>
+          <td class="text-center clickable text-underline" (click)="navigateToTranslations(item.projectId)">
+            {{item.translationsCount | userNumber: '1.0-0' | async}}
+          </td>
+          <td class="text-center"
+              (click)="navigateToFailedTranslations(item)"
+              [ngClass]="{'clickable text-danger text-underline': item.invalidTranslationsCount}">
+            {{item.invalidTranslationsCount | userNumber: '1.0-0' | async}}
+          </td>
+          <td class="text-center"
+              (click)="navigateToBenchmarkFailedTranslations(item)"
+              [ngClass]="{'clickable text-danger text-underline': item.benchmarkInvalidTranslationsCount}">
+            {{item.benchmarkInvalidTranslationsCount | userNumber: '1.0-0' | async}}
+          </td>
+          <td class="text-center">
+            <span *ngIf="!item.qaModelId"
+                  class="text-underline"
+                  containerClass="light"
+                  tooltip="Not available because Documents in the Project have different QA Models">n/a</span>
+            <span *ngIf="item.qaModelId">{{item.pointSum | userNumber: '1.0-2' | async}}</span>
+          </td>
+          <td class="text-center">{{item.benchmarkPointSum | userNumber: '1.0-2' | async}}</td>
+          <td class="text-underline text-center"
+              [ngClass]="{'text-danger': item.qaModelId && item.isValid === false, 'text-success': item.qaModelId && item.isValid !== false}">
+            <span *ngIf="!item.qaModelId"
+                  class="text-underline"
+                  containerClass="light"
+                  tooltip="Not available because Documents in the Project have different QA Models">n/a</span>
+            <div [tooltip]="tooltip" *ngIf="item.qaModelId" containerClass="light" class="clickable">
+              {{item.isValid === null ? '' : item.isValid ? 'Pass' : 'Failed'}}
+            </div>
+            <ng-template #tooltip>
+              <qa-model-tooltip [data]="item.tooltipData"></qa-model-tooltip>
+            </ng-template>
+          </td>
+          <td class="text-underline clickable text-center text-success" [ngClass]="{'text-danger': item.isBenchmarkValid === false}">
+            <div [tooltip]="benchmarkTooltip" containerClass="light" class="clickable">
+              {{item.isBenchmarkValid !== false? 'Pass' : 'Failed'}}
+            </div>
+            <ng-template #benchmarkTooltip>
+              <qa-model-tooltip [data]="item.benchmarkTooltipData"></qa-model-tooltip>
+            </ng-template>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <qiq-pagination [totalRows]="totalRows"
+                           [filter]="filter"
+                           (pageChanged)="gotoPage($event)">
+    </qiq-pagination>
+    <spinner [isVisible]="isBusy"></spinner>
+  </div>
+</div>
