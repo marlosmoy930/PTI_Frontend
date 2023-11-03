@@ -1,0 +1,54 @@
+@import "../../../scss/bootstrap/_variables.scss";
+
+.page-heading {
+  font-weight: bold;
+  color: $primary;
+  cursor: pointer;
+  user-select: none;
+  font-size: larger;
+  margin-right: 0.5rem;
+}
+
+.q-and-a-table {
+  table-layout: fixed;
+
+  .first-row {
+    border-top-width: 2px;
+  }
+
+  .cell-segment {
+    width: 3rem;
+    vertical-align: middle;
+  }
+
+  .cell-language {
+    width: 4rem;
+    vertical-align: middle;
+  }
+
+  .cell-source {
+    vertical-align: middle;
+  }
+
+  .cell-collapsed {
+    width: 3rem;
+  }
+
+  .answer-textarea {
+    border-color: transparent;
+    background-color: rgba($secondary, .65);
+
+    &.changed {
+      border-color: $info;
+    }
+  }
+
+  .external-user-icon {
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.2;
+    white-space: pre-wrap;
+    font-size: x-small;
+    font-weight: 100;
+  }
+}

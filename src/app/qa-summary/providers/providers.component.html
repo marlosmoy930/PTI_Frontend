@@ -1,0 +1,116 @@
+<div class="container col-12">
+  <h5 class="mt-3">
+    <i18n key="QualityAssurance.TranslationProviders.Title" default="Translation Providers"></i18n>&nbsp;
+    <button class="btn btn-sm btn-outline-primary" (click)="export()" i18nTitle="QualityAssurance.TranslationProviders.Export" default="Export">
+      <i class="fa fa-download"></i>
+    </button>
+  </h5>
+  <div class="spinner-container">
+    <table class="table table-sm table-hover mt-2 small">
+      <thead class="thead-light">
+        <tr>
+          <th class="text-center"><i18n key="QaSummary.Providers.Id" default="Id"></i18n></th>
+          <th class="text-center"><i18n key="QaSummary.Providers.Name" default="Name"></i18n></th>
+          <th class="text-center"><i18n key="QaSummary.Providers.SourceLanguages" default="Source Languages"></i18n></th>
+          <th class="text-center"><i18n key="QaSummary.Providers.TargetLanguages" default="Target Languages"></i18n></th>
+
+          <th class="text-center"><i18n key="QaSummary.Providers.Projects" default="Projects"></i18n></th>
+          <th class="text-center"><i18n key="QaSummary.Providers.FailedProjects" default="Failed Projects"></i18n></th>
+          <th class="text-center"><i18n key="QaSummary.Providers.BenchmarkFailedProjects" default="Benchmark Failed Projects"></i18n></th>
+          <th class="text-center"><i18n key="QaSummary.Providers.Documents" default="Documents"></i18n></th>
+          <th class="text-center"><i18n key="QaSummary.Providers.FailedDocuments" default="Failed Documents"></i18n></th>
+          <th class="text-center"><i18n key="QaSummary.Providers.BenchmarkFailedDocuments" default="Benchmark Failed Documents"></i18n></th>
+          <th class="text-center"><i18n key="QaSummary.Providers.Translations" default="Translations"></i18n></th>
+          <th class="text-center"><i18n key="QaSummary.Providers.FailedTranslations" default="Failed Translations"></i18n></th>
+          <th class="text-center"><i18n key="QaSummary.Providers.BenchmarkFailedTranslations" default="Benchmark Failed Translations"></i18n></th>
+          <th class="text-center"><i18n key="QaSummary.Providers.TranslationsWordsCount" default="Translations Words"></i18n></th>
+          <th class="text-center"><i18n key="QaSummary.Providers.IssuesCount" default="Issues"></i18n></th>
+          <th class="text-center"><i18n key="QaSummary.Providers.TranslationPoints" default="Points"></i18n></th>
+          <th class="text-center"><i18n key="QaSummary.Providers.WordsPerPoint" default="Words per Points"></i18n></th>
+          <th class="text-center"><i18n key="QaSummary.Providers.BenchmarkPoints" default="Benchmark Points"></i18n></th>
+          <th class="text-center"><i18n key="QaSummary.Providers.BenchmarkWordsPerPoint" default="Words per Benchmark Points"></i18n></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of providers">
+          <td>{{item.providerId}}</td>
+          <td>
+            <a [routerLink]="['/translation-providers', item.providerId]">
+              {{item.provider}}
+            </a>
+          </td>
+          <td class="text-center clickable text-underline" (click)="navigateToSourceLanguages(item.providerId)">
+            {{item.sourceLanguages | userNumber: '1.0-0' | async}}
+          </td>
+          <td class="text-center clickable text-underline" (click)="navigateToTargetLanguages(item.providerId)">
+            {{item.targetLanguages | userNumber: '1.0-0' | async}}
+          </td>
+          <td class="text-center clickable text-underline" (click)="navigateToProjects(item.providerId)">
+            {{item.projects | userNumber: '1.0-0' | async}}
+          </td>
+          <td class="text-center"
+              (click)="navigateToFailedProjects(item)"
+              [ngClass]="{'clickable text-danger text-underline': item.failedProjects}">
+            {{item.failedProjects | userNumber: '1.0-0' | async}}
+          </td>
+          <td class="text-center"
+              (click)="navigateToBenchmarkFailedProjects(item)"
+              [ngClass]="{'clickable text-danger text-underline': item.benchmarkFailedProjects}">
+            {{item.benchmarkFailedProjects | userNumber: '1.0-0' | async}}
+          </td>
+          <td class="text-center clickable text-underline" (click)="navigateToDocuments(item.providerId)">
+            {{item.documents | userNumber: '1.0-0' | async}}
+          </td>
+          <td class="text-center"
+              (click)="navigateToFailedDocuments(item)"
+              [ngClass]="{'clickable text-danger text-underline': item.failedDocuments}">
+            {{item.failedDocuments | userNumber: '1.0-0' | async}}
+          </td>
+          <td class="text-center"
+              (click)="navigateToBenchmarkFailedDocuments(item)"
+              [ngClass]="{'clickable text-danger text-underline': item.benchmarkFailedDocuments}">
+            {{item.benchmarkFailedDocuments | userNumber: '1.0-0' | async}}
+          </td>
+          <td class="text-center clickable text-underline" (click)="navigateToTranslations(item.providerId)">
+            {{item.translations | userNumber: '1.0-0' | async}}
+          </td>
+          <td class="text-center"
+              (click)="navigateToFailedTranslations(item)"
+              [ngClass]="{'clickable text-danger text-underline': item.failedTranslations}">
+            {{item.failedTranslations | userNumber: '1.0-0' | async}}
+          </td>
+          <td class="text-center"
+              (click)="navigateToBenchmarkFailedTranslations(item)"
+              [ngClass]="{'clickable text-danger text-underline': item.benchmarkFailedTranslations}">
+            {{item.benchmarkFailedTranslations | userNumber: '1.0-0' | async}}
+          </td>
+          <td class="text-center">{{item.translationsWordsCount | userNumber: '1.0-0' | async}}</td>
+          <td class="text-center clickable text-underline" (click)="navigateToIssues(item.providerId)">
+            {{item.issues | userNumber: '1.0-0' | async}}
+          </td>
+          <td class="text-center">
+            <span *ngIf="!item.haveTranslationsSameQaModel"
+                  class="text-underline"
+                  containerClass="light"
+                  tooltip="Not available because Translations in the Language have different QA Models">n/a</span>
+            <span *ngIf="item.haveTranslationsSameQaModel">{{item.translationsPointSum | userNumber: '1.0-2' | async}}</span>
+          </td>
+          <td class="text-center">
+            <span *ngIf="!item.haveTranslationsSameQaModel"
+                  class="text-underline"
+                  containerClass="light"
+                  tooltip="Not available because Translations in the Language have different QA Models">n/a</span>
+            <span *ngIf="item.haveTranslationsSameQaModel">{{item.wordsPerPoint | userNumber: '1.0-2'| async}}</span>
+          </td>
+          <td class="text-center">{{item.benchmarkPoints | userNumber: '1.0-2' | async}}</td>
+          <td class="text-center">{{item.benchmarkWordsPerPoint | userNumber: '1.0-2'| async}}</td>
+        </tr>
+      </tbody>
+    </table>
+    <qiq-pagination [totalRows]="totalRows"
+                           [filter]="filter"
+                           (pageChanged)="gotoPage($event)">
+    </qiq-pagination>
+    <spinner [isVisible]="isBusy"></spinner>
+  </div>
+</div>

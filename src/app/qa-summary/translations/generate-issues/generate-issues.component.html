@@ -1,0 +1,107 @@
+<div class="container p-4" *ngIf="filter">
+    <div class="form-row">
+      <h3 class="col-12 mt-3">
+        <i18n key="QaSummary.Translations.GenerateIssues.Title" default="Generate issues"></i18n>
+      </h3>
+    </div>
+    <div class="form-row">
+      <div class="form-group col">
+        <label for="qaModel">
+          <i18n key="QaSummary.Translations.GenerateIssues.QaModel" default="QA Model"></i18n>
+        </label>
+        <ng-select class="sm"
+                   [items]="qaModels"
+                   bindLabel="name"
+                   bindValue="id"
+                   [(ngModel)]="filter.qaModelId"
+                   labelForId="qaModel"
+                   (change)="onFilterQaModelChange()">
+        </ng-select>
+      </div>
+      <div class="form-group col">
+        <label for="category">
+          <i18n key="QaSummary.Translations.GenerateIssues.Category" default="Category"></i18n>
+        </label>
+        <ng-select class="sm"
+                   [items]="categories"
+                   bindLabel="name"
+                   bindValue="id"
+                   [(ngModel)]="filter.categoryId"
+                   labelForId="category"
+                   [disabled]="!filter.qaModelId">
+        </ng-select>
+      </div>
+      <div class="form-group col">
+        <label for="severity">
+          <i18n key="QaSummary.Translations.GenerateIssues.Severity" default="Severity"></i18n>
+        </label>
+        <ng-select class="sm"
+                   [items]="severities"
+                   bindLabel="name"
+                   bindValue="id"
+                   [(ngModel)]="filter.severityId"
+                   labelForId="severity"
+                   [disabled]="!filter.qaModelId">
+        </ng-select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col">
+        <label for="fromDate">
+          <i18n key="QaSummary.Translations.GenerateIssues.FromDate" default="From"></i18n>
+        </label>
+        <div class="input-group">
+          <input id="fromDate"
+                 type="text"
+                 autocomplete="off"
+                 class="form-control form-control-sm"
+                 bsDatepicker
+                 [(ngModel)]="filter.fromDate">
+          <div class="input-group-append" *ngIf="filter.fromDate">
+            <button class="btn btn-sm btn-outline-secondary" type="button" (click)="filter.fromDate = undefined">
+              <i class="fa fa-times"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="form-group col">
+        <label for="toDate">
+          <i18n key="QaSummary.Translations.GenerateIssues.ToDate" default="To"></i18n>
+        </label>
+        <div class="input-group">
+          <input id="toDate"
+                 type="text"
+                 autocomplete="off"
+                 class="form-control form-control-sm"
+                 bsDatepicker
+                 [(ngModel)]="filter.toDate">
+          <div class="input-group-append" *ngIf="filter.toDate">
+            <button class="btn btn-sm btn-outline-secondary" type="button" (click)="filter.toDate = undefined">
+              <i class="fa fa-times"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group col">
+        <label for="countPerTranslation">
+          <i18n key="QaSummary.Translations.GenerateIssues.CountPerTranslation" default="Count per translation"></i18n>
+        </label>
+        <input type="number" class="form-control form-control-sm" min="1" [(ngModel)]="countPerTranslation" />
+      </div>
+    </div>
+    <div class="form-row px-2 justify-content-end">
+      <button type="button"
+              class="btn btn-primary"
+              [disabled]="isBusy"
+              (click)="generate()">
+        <i18n key="Buttons.Generate"></i18n>
+      </button>
+      <button type="button"
+              class="btn btn-secondary ml-2"
+              [disabled]="isBusy"
+              (click)="close()">
+        <i18n key="Buttons.Cancel"></i18n>
+      </button>
+    </div>
+</div>

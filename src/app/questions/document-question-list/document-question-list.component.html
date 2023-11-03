@@ -1,0 +1,220 @@
+<div class="spinner-container">
+  <ng-container *ngIf="isInitialized">
+    <div class="form-row justify-content-start align-items-baseline mb-2">
+      <i18n key="DocumentQuestionsList.Title" default="Document questions" class="page-heading"></i18n>
+      <div class="m-2 btn-group btn-group-sm">
+        <button class="btn btn-outline-primary"
+                type="button"
+                [ngClass]="{'font-weight-bold': isDocumentSectionVisible}"
+                (click)="isDocumentSectionVisible = !isDocumentSectionVisible">
+          <i18n key="DocumentQuestionsList.Info" default="Info"></i18n>
+          <i class="ml-2 fa fa-caret-down" *ngIf="!isDocumentSectionVisible"></i>
+          <i class="ml-2 fa fa-caret-up" *ngIf="isDocumentSectionVisible"></i>
+        </button>
+        <button class="btn btn-outline-primary"
+                type="button"
+                [ngClass]="{'font-weight-bold': isDocumentNotifierSectionVisible}"
+                (click)="isDocumentNotifierSectionVisible = !isDocumentNotifierSectionVisible">
+          <i18n key="DocumentQuestionsList.Notify" default="Notify"></i18n>
+          <i class="ml-2 fa fa-caret-down" *ngIf="!isDocumentNotifierSectionVisible"></i>
+          <i class="ml-2 fa fa-caret-up" *ngIf="isDocumentNotifierSectionVisible"></i>
+        </button>
+      </div>
+      <div class="m-2 btn-group btn-group-sm">
+        <button class="btn btn-outline-primary"
+                type="button"
+                (click)="updateAnswers()"
+                [disabled]="isBusy || !hasChangedAnswers">
+          <i18n key="Buttons.Update"></i18n>
+        </button>
+        <button class="btn btn-outline-primary"
+                type="button"
+                (click)="discardChanges()"
+                [disabled]="isBusy || !hasChangedAnswers">
+          <i18n key="Buttons.Discard"></i18n>
+        </button>
+      </div>
+      <div class="m-2 btn-group btn-group-sm">
+        <button class="btn btn-outline-primary"
+                type="button"
+                (click)="export()">
+          <i class="fa fa-download mr-1"></i>
+          <i18n key="DocumentQuestionsList.Export" default="Export"></i18n>
+        </button>
+        <label for="file-button"
+               class="mb-0 btn btn-outline-primary"
+               i18ntitle="DocumentQuestionsList.Import">
+          <i class="fa fa-upload mr-1"></i>
+          <i18n key="DocumentQuestionsList.Import" default="Import"></i18n>
+          <input type="file"
+                 id="file-button"
+                 class="d-none"
+                 (change)="import($event.target.files)"
+                 #fileInput
+                 (click)="fileInput.value = null">
+        </label>
+      </div>
+    </div>
+    <div class="card mb-3 bg-secondary" [collapse]="!isDocumentSectionVisible" [isAnimated]="true">
+      <div class="card-body p-2">
+        <div class="form-row">
+          <div class="form-group col">
+            <label for="projectName"><i18n key="DocumentQuestionsList.ProjectName" default="Project Name"></i18n></label>
+            <input id="projectName"
+                   type="text"
+                   class="form-control"
+                   [value]="document.projectName"
+                   name="projectName"
+                   readonly>
+          </div>
+          <div class="form-group col">
+            <label for="documentName"><i18n key="DocumentQuestionsList.DocumentName" default="Document Name"></i18n></label>
+            <input id="documentName"
+                   type="text"
+                   class="form-control"
+                   [value]="document.name"
+                   name="documentName"
+                   readonly>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col">
+            <label for="sourceLang"><i18n key="DocumentQuestionsList.SourceLanguage" default="Source Language"></i18n></label>
+            <input id="sourceLang"
+                   type="text"
+                   class="form-control"
+                   [value]="document.sourceLanguageAcronym"
+                   name="sourceLang"
+                   readonly>
+          </div>
+          <div class="form-group col">
+            <label><i18n key="DocumentQuestionsList.TargetLanguages" default="Target Languages"></i18n></label>
+            <nav class="nav" i18nTitle="DocumentQuestionsList.OpenInMemoQ" default="Open in MemoQ">
+              <a class="nav-link"
+                 *ngFor="let item of memoQTranslationUrls"
+                 [attr.href]="item.memoQTranslationUrl"
+                 href=""
+                 target="_blank">
+                {{item.targetLanguageAcronym}}
+                <i class="small fa fa-external-link"></i>
+              </a>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div document-questions-notifier
+         [document]="documentSubject"
+         class="card mb-3 bg-secondary"
+         [collapse]="!isDocumentNotifierSectionVisible"
+         [isAnimated]="true">
+    </div>
+  </ng-container>
+  <table class="q-and-a-table table table-sm" *ngIf="isInitialized">
+    <thead>
+      <tr>
+        <th class="cell-segment">#</th>
+        <th [ngClass]="isSourceVisible ? null : 'cell-collapsed'" class="cell-source">
+          <ng-container [ngSwitch]="isSourceVisible">
+            <ng-container *ngSwitchCase="true">
+              <i18n class="flex-fill"
+                    key="DocumentQuestionsList.Source"
+                    default="Source"></i18n>
+              <i class="fa fa-caret-left clickable mx-2"
+                 (click)="isSourceVisible=!isSourceVisible"
+                 i18nTitle="Shared.Text.Collapse"></i>
+            </ng-container>
+            <ng-container *ngSwitchCase="false">
+              <i18n class="flex-fill"
+                    key="DocumentQuestionsList.S"
+                    default="S"></i18n>
+              <i class="fa fa-caret-right clickable mx-2"
+                 (click)="isSourceVisible=!isSourceVisible"
+                 i18nTitle="Shared.Text.Expand"></i>
+            </ng-container>
+          </ng-container>
+        </th>
+        <th class="cell-language"><i18n key="DocumentQuestionsList.Language" default="Lang"></i18n></th>
+        <th [ngClass]="isTargetVisible ? null : 'cell-collapsed'">
+          <ng-container [ngSwitch]="isTargetVisible">
+            <ng-container *ngSwitchCase="true">
+              <i18n class="flex-fill"
+                    key="DocumentQuestionsList.Target"
+                    default="Target"></i18n>
+              <i class="fa fa-caret-left clickable mx-2"
+                 (click)="isTargetVisible=!isTargetVisible"
+                 i18nTitle="Shared.Text.Collapse"></i>
+            </ng-container>
+            <ng-container *ngSwitchCase="false">
+              <i18n class="flex-fill"
+                    key="DocumentQuestionsList.T"
+                    default="T"></i18n>
+              <i class="fa fa-caret-right clickable mx-2"
+                 (click)="isTargetVisible=!isTargetVisible"
+                 i18nTitle="Shared.Text.Expand"></i>
+            </ng-container>
+          </ng-container>
+        </th>
+        <th><i18n key="DocumentQuestionsList.Questions" default="Questions"></i18n></th>
+        <th><i18n key="DocumentQuestionsList.Answers" default="Answers"></i18n></th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let $s of segments">
+        <tr *ngFor="let $l of $s.languageItems; let isFirstLanguage = first">
+          <td *ngIf="isFirstLanguage"
+              class="cell-segment font-weight-bold"
+              [ngClass]="{'first-row': isFirstLanguage}"
+              [attr.rowspan]="$s.languageItems.length">
+            {{$s.segmentNumber}}
+          </td>
+          <td *ngIf="isFirstLanguage"
+              [ngSwitch]="isSourceVisible"
+              [attr.rowspan]="$s.languageItems.length"
+              class="cell-source text-muted"
+              [ngClass]="{'cell-collapsed': isSourceVisible, 'first-row' : isFirstLanguage}">
+            <ng-container *ngSwitchCase="true">{{$s.sourceContent}}</ng-container>
+            <ng-container *ngSwitchCase="false">&nbsp;</ng-container>
+          </td>
+          <td class="cell-language text-nowrap font-italic" [ngClass]="{'first-row': isFirstLanguage}">
+            {{$l.targetLanguageAcronym}}
+          </td>
+          <td [ngSwitch]="isTargetVisible"
+              [ngClass]="{'cell-collapsed': isTargetVisible, 'first-row' : isFirstLanguage}"
+              class="text-muted">
+            <ng-container *ngSwitchCase="true">{{$l.targetContent}}</ng-container>
+            <ng-container *ngSwitchCase="false">&nbsp;</ng-container>
+          </td>
+          <td [ngClass]="{'first-row': isFirstLanguage}">
+            <div *ngFor="let $q of $l.questions" class="d-flex align-items-center">
+              <ng-template #questionPopoverTemplate>
+                {{$q.userName}}
+                <span class="small text-black-50" *ngIf="$q.externalUserTitle">
+                  ({{$q.externalUserTitle}})
+                </span>
+                &nbsp;
+                {{$q.translationCommentSortingDate | userDate:'shortDate,shortTime' | async}}
+              </ng-template>
+              <i [popover]="questionPopoverTemplate"
+                 [outsideClick]="true"
+                 class="fa fa-user-o text-muted external-user-icon clickable mr-2"></i>
+              {{$q.translationComment}}
+            </div>
+          </td>
+          <td [ngClass]="{'first-row': isFirstLanguage}">
+            <textarea type="text"
+                      class="form-control form-control-sm answer-textarea"
+                      [ngClass]="{'changed': $l.answer.isContentChanged}"
+                      i18nPlaceholder="DocumentQuestionsList.TypeAnAnswer"
+                      default="Type an answer"
+                      [(ngModel)]="$l.answer.content"
+                      (ngModelChange)="updateIsContentChanged($l.answer)"
+                      [disabled]="isBusy"></textarea>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+  <spinner [isVisible]="isBusy"></spinner>
+</div>
+
