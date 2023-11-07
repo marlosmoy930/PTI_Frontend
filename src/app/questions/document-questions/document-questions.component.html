@@ -1,0 +1,218 @@
+<div class="spinner-container">
+  <div class="col-xl-8 col-lg-10 col-md-12 ml-auto mr-auto" *ngIf="document">
+    <div class="form-row">
+      <div class="col-12 my-3">
+        <span class="page-heading" (click)="isDocumentSectionVisible = !isDocumentSectionVisible">
+          <i18n key="Document.Questions.Title" default="Questions for document"></i18n>
+          <i class="ml-2 fa fa-caret-down" *ngIf="!isDocumentSectionVisible"></i>
+          <i class="ml-2 fa fa-caret-up" *ngIf="isDocumentSectionVisible"></i>
+        </span>
+        <div class="btn-group btn-group-sm" dropdown>
+          <button dropdownToggle type="button" class="btn btn-sm btn-outline-primary dropdown-toggle">
+            <i class="fa fa-download mr-1"></i>
+            <i18n key="Document.Questions.Export" default="Export"></i18n>
+            <span class="caret"></span>
+          </button>
+          <div *dropdownMenu class="dropdown-menu">
+            <button *ngFor="let item of translationLanguages"
+                    class="dropdown-item btn-sm"
+                    type="button"
+                    (click)="export(item.translationId)">
+              {{item.targetLanguage}}
+            </button>
+          </div>
+        </div>
+        <label for="file-button"
+               class="ml-4 mb-0 btn btn-sm btn-outline-primary"
+               i18ntitle="Document.Questions.Import">
+          <i class="fa fa-upload mr-1"></i>
+          <i18n key="Document.Questions.Import" default="Import"></i18n>
+          <input type="file" id="file-button" class="d-none" (change)="import($event.target.files)">
+        </label>
+        <button *ngIf="hasUnreadAnswers"
+                class="btn btn-sm btn-outline-primary ml-4"
+                (click)="markAllTranslationAnswersAsRead()"
+                [disabled]="isBusy">
+          <i18n key="Buttons.MarkAllAsRead"></i18n>
+        </button>
+      </div>
+    </div>
+    <div class="card mb-3" [collapse]="!isDocumentSectionVisible" [isAnimated]="true">
+      <div class="card-body p-2">
+        <div class="form-row">
+          <div class="form-group col">
+            <label for="projectName"><i18n key="Document.Questions.ProjectName" default="Project Name"></i18n></label>
+            <input id="projectName"
+                   type="text"
+                   class="form-control"
+                   [value]="document.projectName"
+                   name="projectName"
+                   readonly>
+          </div>
+          <div class="form-group col">
+            <label for="sourceLang"><i18n key="Document.Questions.SourceLanguage" default="Source Language"></i18n></label>
+            <input id="sourceLang"
+                   type="text"
+                   class="form-control"
+                   [value]="document.sourceLanguageAcronym"
+                   name="sourceLang"
+                   readonly>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col">
+            <label for="documentName"><i18n key="Document.Questions.DocumentName" default="Document Name"></i18n></label>
+            <input id="documentName"
+                   type="text"
+                   class="form-control"
+                   [value]="document.name"
+                   name="documentName"
+                   readonly>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col">
+            <label><i18n key="Document.Questions.TargetLanguages" default="Target Languages"></i18n></label>
+            <nav class="nav" i18nTitle="Document.Questions.OpenInMemoQ" default="Open in MemoQ">
+              <a class="nav-link"
+                 *ngFor="let item of memoQTranslationUrls"
+                 [attr.href]="item.memoQTranslationUrl"
+                 href=""
+                 target="_blank">
+                {{item.targetLanguageAcronym}}
+                <i class="small fa fa-external-link"></i>
+              </a>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <table class="table table-sm q-and-a-table">
+    <thead class="thead-light">
+      <tr>
+        <th class="text-center segment-cell"><i18n key="Document.Questions.SegmentNumber" default="#"></i18n></th>
+        <th class="text-center target-languages-cell" i18nTitle="Document.Questions.TargetLanguages" default="Target languages">
+          <i class="fa fa-globe"></i>
+        </th>
+        <th class="text-center"><i18n key="Document.Questions.Source" default="Source"></i18n></th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let segment of segments">
+        <tr>
+          <td class="segment-cell clickable" (click)="segment.toggleCollapsed()">
+            <i class="fa fa-caret-down"
+               [class.text-muted]="!segment.hasSelectedLanguageItem"
+               *ngIf="segment.isCollapsed"></i>
+            <i class="fa fa-caret-up"
+               [class.text-muted]="!segment.hasSelectedLanguageItem"
+               *ngIf="!segment.isCollapsed"></i>
+            {{segment.segmentNumber}}
+            <i *ngIf="segment.hasUnreadAnswers"
+               class="fa fa-exclamation small font-weight-light clickable"
+               i18nTitle="Document.Questions.HasUnreadAnswers"
+               default="Has unread answers"></i>
+          </td>
+          <td class="small">
+            <ng-select class="sm nowrap"
+                       [disabled]="!segment.hasMultipleLanguages"
+                       [items]="segment.languageItems"
+                       [multiple]="true"
+                       [closeOnSelect]="false"
+                       [hideSelected]="false"
+                       [clearable]="false"
+                       bindLabel="targetLanguageAcronym"
+                       [(ngModel)]="segment.selectedLanguageItems">
+              <ng-template ng-multi-label-tmp let-items="items">
+                <div class="ng-value" *ngFor="let item of items | slice:0:1">
+                  <span class="ng-value-label">
+                    {{item.targetLanguageAcronym}}
+                  </span>
+                </div>
+                <div class="ng-value" *ngIf="items.length > 1">
+                  <span class="ng-value-label">{{items.length - 1}} more...</span>
+                </div>
+              </ng-template>
+            </ng-select>
+          </td>
+          <td>
+            {{segment.sourceContent}}
+          </td>
+        </tr>
+        <ng-container *ngIf="!segment.isCollapsed">
+          <tr class="small bg-secondary second-row" *ngFor="let languageItem of segment.selectedLanguageItems">
+            <td class="segment-cell">
+              {{languageItem.targetLanguageAcronym}}
+              <i *ngIf="languageItem.answer.isUnread"
+                 class="fa fa-exclamation small font-weight-light clickable"
+                 i18nTitle="Document.Questions.HasUnreadAnswers"
+                 default="Has unread answers"></i>
+            </td>
+            <td class="q-and-a-cell" colspan="2">
+              <div class="row pl-4 mt-2 mb-3">
+                <div class="target-title">
+                  <i18n key="Document.Questions.Target" default="Target"></i18n>
+                </div>
+                <div>{{languageItem.targetContent}}</div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="mt-2 mb-3 font-weight-bold">
+                    <i18n key="Document.Questions.Questions" default="Questions"></i18n>
+                  </div>
+                  <div *ngFor="let question of languageItem.questions; let last = last;"
+                       class="questions-container"
+                       [class.last]="last">
+                    <ng-template #commentPopoverTemplate>
+                      {{question.userName}}
+                      <span class="small text-black-50" *ngIf="question.externalUserTitle">
+                        ({{question.externalUserTitle}})
+                      </span>
+                      &nbsp;
+                      {{question.translationCommentSortingDate | userDate:'shortDate,shortTime' | async}}
+                    </ng-template>
+                    <i [popover]="commentPopoverTemplate"
+                       [outsideClick]="true"
+                       class="fa fa-user-o question-text clickable mr-2"></i>
+                    <span class="question-text"
+                          [innerHTML]="question.translationComment | sanitizeHtml">
+                    </span>
+                  </div>
+                </div>
+                <div class="col d-flex flex-column">
+                  <div class="d-flex mb-2">
+                    <i18n class="flex-fill align-self-center font-weight-bold"
+                          key="Document.Questions.Answer"
+                          default="Answer"></i18n>
+                    <button *ngIf="languageItem.answer.isUnread"
+                            class="btn btn-sm btn-outline-primary mr-2"
+                            (click)="languageItem.answer.markAsRead()"
+                            [disabled]="languageItem.answer.isUpdatingHasUnreadAnswer">
+                      <span *ngIf="languageItem.answer.isUpdatingHasUnreadAnswer" class="spinner-border spinner-border-sm"></span>
+                      <i18n key="Buttons.MarkAsRead"></i18n>
+                    </button>
+                    <button class="answer-btn btn btn-sm btn-outline-primary"
+                            (click)="languageItem.answer.createOrUpdate()"
+                            [disabled]="languageItem.answer.isUpdatingAnswer">
+                      <span *ngIf="languageItem.answer.isUpdatingAnswer" class="spinner-border spinner-border-sm"></span>
+                      <i18n *ngIf="!languageItem.answer.isUpdatingAnswer && languageItem.answer.isNew" key="Buttons.Add"></i18n>
+                      <i18n *ngIf="!languageItem.answer.isUpdatingAnswer && !languageItem.answer.isNew" key="Buttons.Update"></i18n>
+                    </button>
+                  </div>
+                  <textarea type="text"
+                            class="flex-fill form-control"
+                            i18nPlaceholder="Document.Questions.TypeAnswer"
+                            default="Type the answer"
+                            [(ngModel)]="languageItem.answer.content"
+                            [disabled]="isBusy"></textarea>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+      </ng-container>
+    </tbody>
+  </table>
+</div>
+<spinner [isVisible]="isBusy"></spinner>

@@ -1,0 +1,59 @@
+@import "../../../scss/bootstrap/_variables.scss";
+
+$targetLanguagesCellWith: 10rem;
+
+.page-heading {
+  font-weight: bold;
+  color: $primary;
+  cursor: pointer;
+  user-select: none;
+  font-size: larger;
+  margin-right: 0.5rem;
+}
+
+.q-and-a-table {
+  table-layout: fixed;
+
+  .segment-cell {
+    width: 4rem;
+    vertical-align: middle;
+  }
+
+  .target-languages-cell {
+    width: $targetLanguagesCellWith;
+  }
+
+  .q-and-a-cell {
+
+    .target-title {
+      font-weight: bold;
+      width: $targetLanguagesCellWith;
+    }
+
+    .questions-container {
+      border-bottom: 1px solid $gray-300;
+
+      &.last {
+        border-bottom: 0 solid;
+        padding-bottom: 1rem;
+      }
+
+      .question-text {
+        font-size: 1rem;
+        font-weight: 500;
+        line-height: 1.2;
+        white-space: pre-wrap;
+        color: $primary;
+
+        &.fa {
+          font-size: small;
+          font-weight: 100;
+        }
+      }
+    }
+
+    .answer-btn {
+      width: 4rem;
+    }
+  }
+}
