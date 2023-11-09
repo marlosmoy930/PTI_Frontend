@@ -1,0 +1,93 @@
+<div class="spinner-container">
+  <div class="card-body p-2">
+    <div class="form-row">
+      <div class="form-group col-md-6 col-sm-12">
+        <div class="text-primary">
+          <i18n key="DocumentQuestionsNotifier.DocumentUsers" default="Document users"></i18n>
+        </div>
+        <table class="table table-sm" *ngIf="isInitialized">
+          <thead>
+            <tr>
+              <th class="cell-selection clickable">
+                <i *ngIf="isAllSelected" class="fa fa-check-square-o" (click)="selectAll()"></i>
+                <i *ngIf="!isAllSelected" class="fa fa-square-o" (click)="selectAll()"></i>
+              </th>
+              <th><i18n key="DocumentQuestionsNotifier.UserName" default="Name"></i18n></th>
+              <th><i18n key="DocumentQuestionsNotifier.Roles" default="Roles"></i18n></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let $g of documentUserGroups" (click)="onUserClick($g.userExt)" class="clickable">
+              <td [ngSwitch]="$g.userExt.isSelected" class="cell-selection">
+                <i *ngSwitchCase="true" class="fa fa-check-square-o"></i>
+                <i *ngSwitchCase="false" class="fa fa-square-o"></i>
+              </td>
+              <td>{{$g.userExt.displayName}}</td>
+              <td>{{$g.roleNames}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="form-group col-md-6 col-sm-12">
+        <div class="text-primary">
+          <i18n key="DocumentQuestionsNotifier.AdditionalUsers" class="text-primary" default="Additional users"></i18n>
+          <i (click)="addUserToNotifyModal.show()"
+             class="ml-2 fa fa-plus clickable"
+             i18nTitle="Buttons.Add"></i>
+        </div>
+        <table class="table table-sm" *ngIf="isInitialized">
+          <thead>
+            <tr>
+              <th class="cell-selection">
+                <i class="fa fa-check-square-o hidden"></i>
+              </th>
+              <th><i18n key="DocumentQuestionsNotifier.UserName" default="Name"></i18n></th>
+              <th><i18n key="DocumentQuestionsNotifier.Roles" default="Roles"></i18n></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let $u of additionalUsers">
+              <td class="cell-selection">
+                <i (click)="removeAdditionalUser($u.id)"
+                   class="fa fa-minus-square-o clickable"
+                   i18nTitle="Buttons.Remove"></i>
+              </td>
+              <td>{{$u.displayName}}</td>
+              <td>{{$u.roleNames}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <footer class="d-flex justify-content-center">
+      <button class="btn btn-sm btn-outline-primary ml-2"
+              type="button"
+              (click)="notifyUsers()">
+        <i18n key="DocumentQuestionsNotifier.NotifyUsers" default="Notify Users"></i18n>
+      </button>
+    </footer>
+  </div>
+  <spinner [isVisible]="isBusy"></spinner>
+</div>
+<div bsModal
+     #addUserToNotifyModal="bs-modal"
+     class="modal fade"
+     tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <i18n key="DocumentQuestionsNotifier.AddUsersToNotify" default="Add users to notify"></i18n>
+        <button type="button" class="close pull-right" (click)="addUserToNotifyModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <user-search [canSelect]="true"
+                     [withEmailsOnly]="true"
+                     [pageSize]="5"
+                     (selectionCanceled)="addUserToNotifyModal.hide()"
+                     (selectionConfirmed)="addUsersToNotify($event)"></user-search>
+      </div>
+    </div>
+  </div>
+</div>

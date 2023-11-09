@@ -1,0 +1,142 @@
+<div class="col-xl-8 col-lg-10 col-md-12 ml-auto mr-auto">
+  <h5 class="mt-3">
+    <i18n key="Questions.Title" default="Translation questions"></i18n>
+  </h5>
+  <div class="spinner-container">
+    <div class="container col-md-12 mr-auto ml-0 pl-0">
+      <div class="form-row">
+        <div class="form-group col">
+          <label for="projects"><i18n key="Questions.Filter.Projects" default="Projects"></i18n></label>
+          <ng-select class="sm"
+                     [items]="projects$ | async"
+                     [multiple]="true"
+                     [closeOnSelect]="false"
+                     [hideSelected]="true"
+                     bindLabel="name"
+                     bindValue="id"
+                     name="projects"
+                     [(ngModel)]="filter.projectIds"
+                     [typeahead]="projectTerms"
+                     [loading]="areProjectsLoading"
+                     labelForId="projects">
+          </ng-select>
+        </div>
+        <div class="form-group col-3 col-lg-2">
+          <label for="sourceLang">
+            <i18n class="d-none d-sm-block" key="Questions.Filter.SourceLanguage" default="Source Language"></i18n>
+            <i18n class="d-sm-none" key="Questions.Filter.Source" default="Source"></i18n>
+          </label>
+          <ng-select class="sm"
+                     [items]="languages"
+                     [multiple]="true"
+                     [closeOnSelect]="false"
+                     [hideSelected]="true"
+                     bindLabel="acronym"
+                     bindValue="id"
+                     [(ngModel)]="filter.sourceLanguageIds"
+                     labelForId="sourceLang">
+          </ng-select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col">
+          <label for="documents"><i18n key="Questions.Filter.Documents" default="Documents"></i18n></label>
+          <ng-select class="sm"
+                     [items]="documents$ | async"
+                     [multiple]="true"
+                     [closeOnSelect]="false"
+                     [hideSelected]="true"
+                     bindLabel="name"
+                     bindValue="id"
+                     name="documents"
+                     [(ngModel)]="filter.documentIds"
+                     [typeahead]="documentTerms"
+                     [loading]="areDocumentsLoading"
+                     labelForId="documents">
+          </ng-select>
+        </div>
+        <div class="form-group col-3 col-lg-2">
+          <label for="targetLang">
+            <i18n class="d-none d-sm-block" key="Questions.Filter.TargetLanguage" default="Target Language"></i18n>
+            <i18n class="d-sm-none" key="Questions.Filter.Target" default="Target"></i18n>
+          </label>
+          <ng-select class="sm"
+                     [items]="languages"
+                     [multiple]="true"
+                     [closeOnSelect]="false"
+                     [hideSelected]="true"
+                     bindLabel="acronym"
+                     bindValue="id"
+                     [(ngModel)]="filter.targetLanguageIds"
+                     labelForId="targetLang">
+          </ng-select>
+        </div>
+      </div>
+      <div class="form-row justify-content-end">
+        <div class="form-group col-3 col-lg-2">
+          <button class="btn btn-sm btn-outline-primary btn-block" (click)="gotoPage(1)">
+            <i class="fa fa-search mr-2"></i>
+            <i18n key="Questions.Filter.Search" default="Search"></i18n>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <table class="table table-sm table-hover mt-2 small">
+    <thead class="thead-light">
+      <tr>
+        <th><i18n key="QaSummary.Translations.Id" default="Id"></i18n></th>
+        <th><i18n key="QaSummary.Translations.Project" default="Project"></i18n></th>
+        <th><i18n key="QaSummary.Translations.Document" default="Document"></i18n></th>
+        <th><i18n key="QaSummary.Translations.SourceLanguage" default="Source Language"></i18n></th>
+        <th><i18n key="QaSummary.Translations.TargetLanguage" default="Target Language"></i18n></th>
+        <th><i18n key="QaSummary.Translations.SegmentsWithQuestionsCount" default="Seg with questions"></i18n></th>
+        <!--<th><i18n key="QaSummary.Translations.UnreadAnswersCount" default="Unread"></i18n></th>-->
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of summaryItems">
+        <td>
+          <a [routerLink]="['/projects', item.projectId, 'documents', item.documentId, 'translations', item.translationId]">
+            {{item.translationId}}
+          </a>
+        </td>
+        <td class="break-all">
+          <a [routerLink]="['/projects', item.projectId]">
+            {{item.project}}
+          </a>
+        </td>
+        <td class="break-all">
+          <a [routerLink]="['/projects', item.projectId, 'documents', item.documentId]">
+            {{item.document}}
+          </a>
+        </td>
+        <td>
+          <a [routerLink]="['/languages', item.sourceLanguageId]">
+            {{item.sourceLanguage}}
+          </a>
+        </td>
+        <td>
+          <a [routerLink]="['/languages', item.targetLanguageId]">
+            {{item.targetLanguage}}
+          </a>
+        </td>
+        <td class="text-center">
+          <a [routerLink]="['/projects', item.projectId, 'documents', item.documentId, 'questions']">
+            {{item.segmentsWithQuestionsCount | userNumber: '1.0-0' | async}}
+          </a>
+        </td>
+        <!--<td class="text-center">
+          <a [routerLink]="['/projects', item.projectId, 'documents', item.documentId, 'questions']">
+            {{item.newAnswersCount | userNumber: '1.0-0' | async}}
+          </a>
+        </td>-->
+      </tr>
+    </tbody>
+  </table>
+  <qiq-pagination [totalRows]="totalRows"
+                  [filter]="filter"
+                  (pageChanged)="gotoPage($event)">
+  </qiq-pagination>
+  <spinner [isVisible]="isBusy"></spinner>
+</div>

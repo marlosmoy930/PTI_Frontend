@@ -1,0 +1,41 @@
+<div class="spinner-container" *ngIf="rows">
+  <table class="table table-hover small">
+    <thead class="thead-light">
+      <tr class="text-center">
+        <th><i18n key="Reports.RequestedJobsNearExpiry.TableHead.GlobalOrder" default="Order"></i18n></th>
+        <th><i18n key="Reports.RequestedJobsNearExpiry.TableHead.PrjName" default="Project"></i18n></th>
+        <th><i18n key="Reports.RequestedJobsNearExpiry.TableHead.Job" default="Job"></i18n></th>
+        <th><i18n key="Reports.RequestedJobsNearExpiry.TableHead.JobDescription" default="Job description"></i18n></th>
+        <th><i18n key="Reports.RequestedJobsNearExpiry.TableHead.Resource" default="Resource"></i18n></th>
+        <th><i18n key="Reports.RequestedJobsNearExpiry.TableHead.JobStatusDescription" default="Status"></i18n></th>
+        <th><i18n key="Reports.RequestedJobsNearExpiry.TableHead.ExpiryDate" default="Expiry Date"></i18n></th>
+        <th>JobId</th>
+        <th>EmployeeId</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of rows">
+        <td>{{row.globalOrder}}</td>
+        <td>{{row.prjName}}</td>
+        <td>{{row.job}}</td>
+        <td>{{row.jobDescription}}</td>
+        <td>{{row.resource}}</td>
+        <td>{{row.jobStatusDescription}}</td>
+        <td>{{row.expiryDatePlunet | date:dateFormat:timeZone:locale}} {{row.expiryDatePlunet | date:timeFormat:timeZone:locale}}</td>
+        <td>{{row.jobId}}</td>
+        <td>{{row.employeeId}}</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="row">
+    <div class="col-xs-12 col-12">
+      <pagination [totalItems]="totalRows"
+                  [(ngModel)]="pageIndex"
+                  [itemsPerPage]="itemsPerPage"
+                  [maxSize]="5"
+                  [directionLinks]="true"
+                  (pageChanged)="gotoPage($event.page)"></pagination>
+    </div>
+  </div>
+  <spinner [isVisible]="isBusy"></spinner>
+</div>
