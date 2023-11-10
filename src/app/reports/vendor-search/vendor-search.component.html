@@ -1,0 +1,38 @@
+<form #form="ngForm" novalidate *ngIf="state">
+  <div class="modal-header">
+    <h4 class="modal-title float-left"><i18n key="Reports.VendorSearch.Title" default="Vendor Search"></i18n></h4>
+    <button type="button" class="close float-right" (click)="bsModalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="form-group">
+      <label for="language"><i18n key="Reports.VendorSearch.SelectTargetLanguage" default="Select Target Language"></i18n></label>
+      <ng-select [items]="languages"
+                 bindLabel="name"
+                 [(ngModel)]="state.language"
+                 class="validatable"
+                 name="language"
+                 required>
+      </ng-select>
+    </div>
+    <div class="form-group">
+      <label for="saleService"><i18n key="Reports.VendorSearch.SelectService" default="Select Service"></i18n></label>
+      <ng-select [items]="saleServices"
+                 bindLabel="name"
+                 [(ngModel)]="state.saleService"
+                 class="validatable"
+                 name="saleService"
+                 required>
+      </ng-select>
+    </div>  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="generateReport()" [disabled]="isBusy">
+      <span *ngIf="!isBusy"><i18n key="Buttons.Generate"></i18n></span>
+      <span *ngIf="isBusy"><i18n key="Shared.Text.InProcess"></i18n></span>
+    </button>
+    <button type="button" class="btn" (click)="bsModalRef.hide()" [disabled]="isBusy">
+      <i18n key="Buttons.Close"></i18n>
+    </button>
+  </div>
+</form>

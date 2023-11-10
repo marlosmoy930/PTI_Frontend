@@ -1,0 +1,65 @@
+<form #form="ngForm" novalidate>
+  <div class="modal-header">
+    <h4 class="modal-title float-left"><i18n key="Reports.TesterHoursByLead.Title"></i18n></h4>
+    <button type="button" class="close float-right" (click)="bsModalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="form-group">
+      <label for="startDate"><i18n key="Reports.Shared.StartDate"></i18n></label>
+      <input id="startDate"
+             name="startDate"
+             type="text"
+             class="form-control validatable"
+             bsDatepicker
+             [(ngModel)]="state.startDate"
+             (bsValueChange)="validate()"
+             required>
+    </div>
+    <div class="form-group">
+      <label for="endDate"><i18n key="Reports.Shared.EndDate"></i18n></label>
+      <input id="endDate"
+             name="endDate"
+             type="text"
+             class="form-control validatable"
+             [class.is-invalid]="form.touched && isEndDateInvalid"
+             bsDatepicker
+             [(ngModel)]="state.endDate"
+             (bsValueChange)="validate()"
+             required>
+      <div class="invalid-feedback" *ngIf="isEndDateInvalid">
+        <i18n key="Reports.Shared.Validation.EndDateAfterStartDate"></i18n>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="lead"><i18n key="Reports.TesterHoursByLead.Lead"></i18n></label>
+      <ng-select [items]="employees"
+                 bindLabel="fullName"
+                 [(ngModel)]="state.lead"
+                 class="validatable"
+                 name="lead">
+      </ng-select>
+    </div>
+    <div class="form-group">
+      <label for="projects"><i18n key="Reports.TesterHoursByLead.Project" default="Projects" ></i18n></label>
+      <ng-select [items]="projects"
+                 [multiple]="true"
+                 [closeOnSelect]="false"
+                 bindLabel="name"
+                 [(ngModel)]="state.projects"
+                 class="validatable"
+                 name="projects">
+      </ng-select>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="generateReport()" [disabled]="isBusy">
+      <span *ngIf="!isBusy"><i18n key="Buttons.Generate"></i18n></span>
+      <span *ngIf="isBusy"><i18n key="Shared.Text.InProcess"></i18n></span>
+    </button>
+    <button type="button" class="btn" (click)="bsModalRef.hide()" [disabled]="isBusy">
+      <i18n key="Buttons.Close"></i18n>
+    </button>
+  </div>
+</form>
